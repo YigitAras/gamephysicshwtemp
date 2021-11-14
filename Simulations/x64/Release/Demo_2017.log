@@ -1,0 +1,150 @@
+﻿  MassSpringSystemSimulator.cpp
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\vectorbase.h(11,1): warning C4005: 'NOMINMAX': macro redefinition
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp : message : see previous definition of 'NOMINMAX'
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(62,28): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(101,15): warning C4305: '=': truncation from 'double' to 'float'
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(116,18): warning C4305: '=': truncation from 'double' to 'float'
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(132,18): warning C4305: '=': truncation from 'double' to 'float'
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(176,17): warning C4305: '=': truncation from 'double' to 'float'
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(266,36): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(278,32): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(282,29): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(309,16): warning C4244: 'initializing': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(349,16): warning C4244: 'initializing': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(367,16): warning C4244: '=': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(413,16): warning C4244: 'initializing': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(463,16): warning C4244: 'initializing': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(498,16): warning C4244: 'initializing': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(554,16): warning C4244: 'initializing': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\vectorbase.h(204,36): warning C4244: 'argument': conversion from 'const Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\vectorbase.h(203): message : while compiling class template member function 'DirectX::XMVECTOR GamePhysics::vector3Dim<GamePhysics::Real>::toDirectXVector(void) const'
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\DrawingUtilitiesClass.h(285): message : see reference to function template instantiation 'DirectX::XMVECTOR GamePhysics::vector3Dim<GamePhysics::Real>::toDirectXVector(void) const' being compiled
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\vectorbase.h(859): message : see reference to class template instantiation 'GamePhysics::vector3Dim<GamePhysics::Real>' being compiled
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\vectorbase.h(204,34): warning C4244: 'argument': conversion from 'const Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\vectorbase.h(204,32): warning C4244: 'argument': conversion from 'const Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(777,79): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(773): message : while compiling class template member function 'DirectX::XMMATRIX GamePhysics::matrix4x4<double>::toDirectXMatrix(void)'
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\DrawingUtilitiesClass.h(380): message : see reference to function template instantiation 'DirectX::XMMATRIX GamePhysics::matrix4x4<double>::toDirectXMatrix(void)' being compiled
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\DrawingUtilitiesClass.h(379): message : see reference to class template instantiation 'GamePhysics::matrix4x4<double>' being compiled
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(777,61): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(777,43): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(777,25): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(776,79): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(776,61): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(776,43): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(776,25): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(775,79): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(775,61): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(775,43): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(775,25): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(774,97): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(774,79): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(774,61): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\matrixbase.h(774,43): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\util\vectorbase.h(1092,2): warning C4996: '_snprintf': This function or variable may be unsafe. Consider using _snprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\cygwin64\home\Administrator\gamephysicstemplate\Simulations\MassSpringSystemSimulator.cpp(326): message : see reference to function template instantiation 'std::ostream &GamePhysics::operator <<<GamePhysics::Real>(std::ostream &,const GamePhysics::vector3Dim<GamePhysics::Real> &)' being compiled
+  Demo_2017.vcxproj -> C:\cygwin64\home\Administrator\gamephysicstemplate\x64\Release\Simulations.lib

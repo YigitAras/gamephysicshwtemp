@@ -8,89 +8,78 @@
 #define MIDPOINT 2
 // Do Not Change
 
-class Spring {
-public:
-	int    P1;
-	int    P2;
-	float  initLenght;
-};
+typedef struct MASSPOINT{
+	Vec3 position;
+	Vec3 velocity;
+	Vec3 mid_position;
+	Vec3 mid_velocity;
+	bool a_p;
+	Vec3 force;
+	Vec3 mid_force;
+	bool isFixed;
+}masspoint;
 
-class Point {
-public:
-	Vec3  position;
-	Vec3  velocity;
-	Vec3  force;
-	bool isFixed = false; // fixed for hanging things maybe?
-};
+typedef struct SPRING {
+	int masspoints[2];
+	float length;
+}spring;
+
 
 class MassSpringSystemSimulator:public Simulator{
 public:
 	// Construtors
-	MassSpringSystemSimulator(); //done
+	MassSpringSystemSimulator();
 	
 	// UI Functions
-	const char * getTestCasesStr(); //done
-	void initUI(DrawingUtilitiesClass * DUC); //done
-	void reset(); //done
+	const char * getTestCasesStr();
+	void initUI(DrawingUtilitiesClass * DUC);
+	void reset();
 	void drawFrame(ID3D11DeviceContext* pd3dImmediateContext);
-	void notifyCaseChanged(int testCase); // partial
-	void externalForcesCalculations(float timeElapsed); //done
+	void notifyCaseChanged(int testCase);
+	void externalForcesCalculations(float timeElapsed);
 	void simulateTimestep(float timeStep);
-	void onClick(int x, int y); //done
-	void onMouse(int x, int y); //done
+	void onClick(int x, int y);
+	void onMouse(int x, int y);
 
 	// Specific Functions
-	void setMass(float mass); //done
-	void setStiffness(float stiffness); //done
-	void setDampingFactor(float damping); //done
-	int addMassPoint(Vec3 position, Vec3 Velocity, bool isFixed); //done
-	void addSpring(int masspoint1, int masspoint2, float initialLength); //done
-	int getNumberOfMassPoints(); //done
-	int getNumberOfSprings(); //done
-	Vec3 getPositionOfMassPoint(int index); //done
-	Vec3 getVelocityOfMassPoint(int index); //done
-	void applyExternalForce(Vec3 force); //done
-	char* getIntegratorsNames(); //done
-	void accumulateForces(); //done
-	Vec3 MassSpringSystemSimulator::hookesLaw(Spring s); //done (does not work without the MassSpringSystemSimulator:: for some reason)???
-	void integration(float timestep);
-
-	// Gravity
-	static void TW_CALL GetGravity(void* value, void* clientData); //done
-	static void TW_CALL SetGravity(const void* value, void* clientData); //done
-	void groundCollision(); //done
-	void wallCollision(); // will do later if time allows
-	
+	void setMass(float mass);
+	void setStiffness(float stiffness);
+	void setDampingFactor(float damping);
+	int addMassPoint(Vec3 position, Vec3 Velocity, bool isFixed);
+	void addSpring(int masspoint1, int masspoint2, float initialLength);
+	int getNumberOfMassPoints();
+	int getNumberOfSprings();
+	Vec3 getPositionOfMassPoint(int index);
+	Vec3 getVelocityOfMassPoint(int index);
+	void applyExternalForce(Vec3 force);
+	void single_euler(float timeStep, bool change, bool p);
+	void single_midpoint(float timeStep, bool change, bool p);
+	void euler(float timeStep);
+	void midpoint(float timeStep);
+	void leapfrog(float timeStep);
+	void setTime(float* timestep);
 	// Do Not Change
 	void setIntegrator(int integrator) {
 		m_iIntegrator = integrator;
 	}
 
-	// integration steps
-	void EulerStep(float ts);
-	void MidpointStep(float ts);
-	void LeapFrogStep(float ts);
-
 private:
 	// Data Attributes
-	float m_floorY = -0.8; // taken from DrawFloor() floor at -1, check before
-	float m_wallXZ = 0.45; // minus or positive -0.5 : 0.5
 	float m_fMass;
 	float m_fStiffness;
-	float m_fDamping = 0;
+	float m_fDamping;
 	int m_iIntegrator;
-	
-
-	// Added later
-	int m_iTest = 0;
-	std::vector<Point> m_Points;
-	std::vector<Spring> m_Springs;
-	Vec3 m_forceMouse;
+	vector<struct MASSPOINT> masspoints;
+	vector<struct SPRING> springs;
+	float* time;
+	float gravity;
+	bool box;
 
 	// UI Attributes
-	Vec3 m_externalForce; //gravity?
+	Vec3 m_externalForce;
 	Point2D m_mouse;
 	Point2D m_trackmouse;
 	Point2D m_oldtrackmouse;
+	bool print;
 };
 #endif

@@ -1,0 +1,1 @@
+C:\cygwin64\home\Administrator\gamephysicstemplate\SimulatorTester\x64\Release\SimulatorTester_2017.vcxproj.AssemblyReference.cache
