@@ -26,16 +26,29 @@ public:
 	void onMouse(int x, int y);
 
 	// Specific Functions
-	void setMass(float mass);
-	void setStiffness(float stiffness);
-	void setDampingFactor(float damping);
-	int addMassPoint(Vec3 position, Vec3 Velocity, bool isFixed);
-	void addSpring(int masspoint1, int masspoint2, float initialLength);
-	int getNumberOfMassPoints();
-	int getNumberOfSprings();
-	Vec3 getPositionOfMassPoint(int index);
-	Vec3 getVelocityOfMassPoint(int index);
-	void applyExternalForce(Vec3 force);
+	void setMass(float mass); //done
+	void setStiffness(float stiffness); //done
+	void setDampingFactor(float damping); //done
+	int addMassPoint(Vec3 position, Vec3 Velocity, bool isFixed); //done
+	void addSpring(int masspoint1, int masspoint2, float initialLength); //done
+	int getNumberOfMassPoints(); //done
+	int getNumberOfSprings(); //done
+	Vec3 getPositionOfMassPoint(int index); //done
+	Vec3 getVelocityOfMassPoint(int index); //done
+	void applyExternalForce(Vec3 force); //done
+	char* getIntegratorsNames(); //done
+	void accumulateForces(); //done
+	Vec3 MassSpringSystemSimulator::hookesLaw(Spring s); //done (does not work without the MassSpringSystemSimulator:: for some reason)???
+	void integration(float timestep);
+	void MassSpringSystemSimulator::timeLink(float* time);
+	void MassSpringSystemSimulator::integratorLink(int* integrator);
+	
+
+	// Gravity
+	static void TW_CALL GetGravity(void* value, void* clientData); //done
+	static void TW_CALL SetGravity(const void* value, void* clientData); //done
+	void groundCollision(); //done
+	void wallCollision(); // will do later if time allows
 	
 	// Do Not Change
 	void setIntegrator(int integrator) {
@@ -48,6 +61,17 @@ private:
 	float m_fStiffness;
 	float m_fDamping;
 	int m_iIntegrator;
+	bool m_firstTime = true;
+	float m_TimeStep;
+	float* time_link;
+	int* integrator_link;
+	
+
+	// Added later
+	int m_iTest = 0;
+	std::vector<Point> m_Points;
+	std::vector<Spring> m_Springs;
+	Vec3 m_forceMouse;
 
 	// UI Attributes
 	Vec3 m_externalForce;
