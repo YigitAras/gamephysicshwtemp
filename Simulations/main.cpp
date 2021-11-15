@@ -20,9 +20,8 @@ using namespace GamePhysics;
 
 //#define ADAPTIVESTEP
 
-//#define TEMPLATE_DEMO
-#define MASS_SPRING_SYSTEM
-
+#define TEMPLATE_DEMO
+//#define MASS_SPRING_SYSTEM
 //#define RIGID_BODY_SYSTEM
 //#define SPH_SYSTEM
 
@@ -31,9 +30,6 @@ using namespace GamePhysics;
 #endif
 #ifdef MASS_SPRING_SYSTEM
 #include "MassSpringSystemSimulator.h"
-MassSpringSystemSimulator* g_pSimulator;
-int g_iPrevIntegrator = LEAPFROG;
-int g_iIntegrator = MIDPOINT;
 #endif
 #ifdef RIGID_BODY_SYSTEM
 //#include "RigidBodySystemSimulator.h"
@@ -43,7 +39,7 @@ int g_iIntegrator = MIDPOINT;
 #endif
 
 DrawingUtilitiesClass * g_pDUC;
-//Simulator * g_pSimulator;
+Simulator * g_pSimulator;
 float 	g_fTimestep = 0.001;
 #ifdef ADAPTIVESTEP
 float   g_fTimeFactor = 1;
@@ -61,11 +57,7 @@ void initTweakBar(){
 	g_pDUC->g_pTweakBar = TwNewBar("TweakBar");
 	TwDefine(" TweakBar color='0 128 128' alpha=128 ");
 	TwType TW_TYPE_TESTCASE = TwDefineEnumFromString("Test Scene", g_pSimulator->getTestCasesStr());
-	TwAddVarRW(g_pDUC->g_pTweakBar, "Test Scene", TW_TYPE_TESTCASE, g_pSimulator->m_iTestCase, "");
-#ifdef MASS_SPRING_SYSTEM
-	TwType TW_TYPE_INTEGRATOR = TwDefineEnumFromString("Integrator", g_pSimulator->getIntegratorsNames());
-	TwAddVarRW(g_pDUC->g_pTweakBar, "Integrator", TW_TYPE_INTEGRATOR, &g_iIntegrator, "");
-#endif
+	TwAddVarRW(g_pDUC->g_pTweakBar, "Test Scene", TW_TYPE_TESTCASE, &g_iTestCase, "");
 	// HINT: For buttons you can directly pass the callback function as a lambda expression.
 	TwAddButton(g_pDUC->g_pTweakBar, "Reset Scene", [](void * s){ g_iPreTestCase = -1; }, nullptr, "");
 	TwAddButton(g_pDUC->g_pTweakBar, "Reset Camera", [](void * s){g_pDUC->g_camera.Reset();}, nullptr,"");
@@ -249,13 +241,6 @@ void CALLBACK OnFrameMove( double dTime, float fElapsedTime, void* pUserContext 
 {
 	UpdateWindowTitle(L"Demo");
 	g_pDUC->update(fElapsedTime);
-#ifdef MASS_SPRING_SYSTEM
-	// Check if the integrator and update 
-	if (g_iPrevIntegrator != g_iIntegrator) {
-		g_pSimulator->setIntegrator(g_iIntegrator);
-		g_iPrevIntegrator = g_iIntegrator;
-	}
-#endif
 	if (g_iPreTestCase != g_iTestCase){// test case changed
 		// clear old setup and build up new setup
 		if(g_pDUC->g_pTweakBar != nullptr) {
