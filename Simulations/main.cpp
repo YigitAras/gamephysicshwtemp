@@ -45,13 +45,14 @@ int g_iIntegrator = MIDPOINT;
 DrawingUtilitiesClass * g_pDUC;
 //Simulator * g_pSimulator;
 float 	g_fTimestep = 0.001;
+
 #ifdef ADAPTIVESTEP
 float   g_fTimeFactor = 1;
 #endif
 bool  g_bDraw = true;
 int g_iTestCase = 0;
 int g_iPreTestCase = -1;
-bool  g_bSimulateByStep = false;
+bool  g_bSimulateByStep = true;
 bool firstTime = true;
 // Video recorder
 FFmpeg* g_pFFmpegVideoRecorder = nullptr;
@@ -61,10 +62,11 @@ void initTweakBar(){
 	g_pDUC->g_pTweakBar = TwNewBar("TweakBar");
 	TwDefine(" TweakBar color='0 128 128' alpha=128 ");
 	TwType TW_TYPE_TESTCASE = TwDefineEnumFromString("Test Scene", g_pSimulator->getTestCasesStr());
-	TwAddVarRW(g_pDUC->g_pTweakBar, "Test Scene", TW_TYPE_TESTCASE, g_pSimulator->m_iTestCase, "");
+	TwAddVarRW(g_pDUC->g_pTweakBar, "Test Scene", TW_TYPE_TESTCASE, &g_iTestCase, "");
 #ifdef MASS_SPRING_SYSTEM
 	TwType TW_TYPE_INTEGRATOR = TwDefineEnumFromString("Integrator", g_pSimulator->getIntegratorsNames());
 	TwAddVarRW(g_pDUC->g_pTweakBar, "Integrator", TW_TYPE_INTEGRATOR, &g_iIntegrator, "");
+	
 #endif
 	// HINT: For buttons you can directly pass the callback function as a lambda expression.
 	TwAddButton(g_pDUC->g_pTweakBar, "Reset Scene", [](void * s){ g_iPreTestCase = -1; }, nullptr, "");
@@ -258,6 +260,7 @@ void CALLBACK OnFrameMove( double dTime, float fElapsedTime, void* pUserContext 
 #endif
 	if (g_iPreTestCase != g_iTestCase){// test case changed
 		// clear old setup and build up new setup
+		// ooga booga timestep adjustment
 		if(g_pDUC->g_pTweakBar != nullptr) {
 			TwDeleteBar(g_pDUC->g_pTweakBar);
 			g_pDUC->g_pTweakBar = nullptr;
@@ -378,6 +381,8 @@ int main(int argc, char* argv[])
 #endif
 #ifdef MASS_SPRING_SYSTEM
 	g_pSimulator= new MassSpringSystemSimulator();
+	g_pSimulator->timeLink(&g_fTimestep);
+	g_pSimulator->integratorLink(&g_iIntegrator);
 #endif
 #ifdef RIGID_BODY_SYSTEM
 	//g_pSimulator= new RigidBodySystemSimulator();
@@ -386,6 +391,8 @@ int main(int argc, char* argv[])
 	//g_pSimulator= new SPHSystemSimulator();
 #endif
 	g_pSimulator->reset();
+	
+	
 
     // Init DXUT and create device
 	DXUTInit( true, true, NULL ); // Parse the command line, show msgboxes on error, no extra command line params

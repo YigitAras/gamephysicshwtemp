@@ -54,6 +54,9 @@ public:
 	void accumulateForces(); //done
 	Vec3 MassSpringSystemSimulator::hookesLaw(Spring s); //done (does not work without the MassSpringSystemSimulator:: for some reason)???
 	void integration(float timestep);
+	void MassSpringSystemSimulator::timeLink(float* time);
+	void MassSpringSystemSimulator::integratorLink(int* integrator);
+	
 
 	// Gravity
 	static void TW_CALL GetGravity(void* value, void* clientData); //done
@@ -79,6 +82,10 @@ private:
 	float m_fStiffness;
 	float m_fDamping = 0;
 	int m_iIntegrator;
+	bool m_firstTime = true;
+	float m_TimeStep;
+	float* time_link;
+	int* integrator_link;
 	
 
 	// Added later
