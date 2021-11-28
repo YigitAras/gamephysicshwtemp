@@ -1,6 +1,7 @@
 #ifndef RIGIDBODYSYSTEMSIMULATOR_h
 #define RIGIDBODYSYSTEMSIMULATOR_h
 #include "Simulator.h"
+#include "collisionDetect.h"
 //add your header for your rigid body system, for e.g.,
 //#include "rigidBodySystem.h" 
 
