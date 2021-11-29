@@ -113,8 +113,8 @@ void RigidBodySystemSimulator::notifyCaseChanged(int testCase)
 	{
 		*time_link = 0.001f;
 		m_iTestCase = 2;
-		addRigidBody(Vec3(-0.1f, -0.2f, 0.1f), Vec3(0.4f, 0.2f, 0.2f), 100.0f);
-		addRigidBody(Vec3(0.0f, 0.2f, 0.0f), Vec3(0.4f, 0.2f, 0.2f), 100.0);
+		addRigidBody(Vec3(-0.1f, -0.2f, 0.1f), Vec3(0.4f, 0.2f, 0.2f), 4);
+		addRigidBody(Vec3(0.0f, 0.2f, 0.0f), Vec3(0.4f, 0.2f, 0.2f), 2);
 		setOrientationOf(1, Quat(Vec3(0.0f, 0.0f, 1.0f), (float)(M_PI) * 0.25f));
 		setVelocityOf(1, Vec3(0.0f, -0.1f, 0.05f));
 		break;
@@ -186,13 +186,13 @@ void RigidBodySystemSimulator::applyForceOnBody(int i, Vec3 loc, Vec3 force) {
 void RigidBodySystemSimulator::simulateTimestep(float timeStep)
 {
 	
-	//resolveCollisions();
+	collisionIntegration();
 	integrateLinearEuler(timeStep);
 	integrateAngularEuler(timeStep);
 	clearBodyForces();
 }
 
-void RigidBodySystemSimulator::resolveCollisions() {
+void RigidBodySystemSimulator::collisionIntegration() {
 	for (int i = 0; i < vBodies.size() - 1; i++)
 	{
 		// check each body
@@ -205,6 +205,41 @@ void RigidBodySystemSimulator::resolveCollisions() {
 			Mat4 MatrixB = GamePhysics::Mat4(b.getObjToWorldMatrix());
 			CollisionInfo ci = checkCollisionSAT(MatrixA, MatrixB);
 			if (ci.isValid) {
+				auto coll_normal = ci.normalWorld;
+				auto coll_pos_world = ci.collisionPointWorld;
+
+				// Calculate velocities at collision point
+
+				Vec3 colPosA = coll_pos_world - a.vPos;
+				Vec3 colPosB = coll_pos_world - b.vPos;
+
+				Vec3 veloPointA = a.vVel + cross(a.vAngular_velocity, colPosA);
+				Vec3 veloPointB = b.vVel + cross(b.vAngular_velocity, colPosB);
+
+				// Calculate relative velocity
+				double relativeVelocity = dot(coll_normal, veloPointA - veloPointB);
+
+				// Fill in the Formula
+				// J = numerator / denominator
+				// numerator  = -(1 + c)V_rel * n
+				// denominator = 1/M_a + 1/M_b + [(Ia_inv ( x_a X n)) X x_a + (Ib_inv ( x_b X n)) X x_b] * n
+				auto numerator = -(1 + m_fBounciness) * relativeVelocity;
+				auto reverseInvPartA = cross(a.current_I_inv() * cross(colPosA, coll_normal), colPosA);
+				auto reverseInvPartB = cross(b.current_I_inv() * cross(colPosB, coll_normal), colPosB);
+
+				//auto reverseInvPartA = cross(a.I_inv * cross(colPosA, coll_normal), colPosA);
+				//auto reverseInvPartB = cross(b.I_inv * cross(colPosB, coll_normal), colPosB);
+
+				auto denominator = 1 / (double)a.fMass + 1 / (double)b.fMass + dot((reverseInvPartA + reverseInvPartB), coll_normal);
+				auto J = numerator / denominator;
+
+				// Update with Impulse
+				 a.vVel = a.vVel + J * coll_normal * 1 / a.fMass;
+				 b.vVel = b.vVel - J * coll_normal * 1 / b.fMass;
+				 a.vAngular_momentum = a.vAngular_momentum + cross(colPosA, J * coll_normal);
+				 b.vAngular_momentum = b.vAngular_momentum - cross(colPosB, J * coll_normal);
+				
+				
 
 			}
 		}
@@ -279,3 +314,4 @@ void RigidBodySystemSimulator::clearBodyForces()
 		body.vForce = body.vTorque = 0;
 	}
 }
+

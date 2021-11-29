@@ -92,7 +92,7 @@ public:
 	void onClick(int x, int y);
 	void onMouse(int x, int y);
 	void timeLink(float* time);
-	void resolveCollisions();
+	void collisionIntegration();
 	void integrateLinearEuler(float timeStep);
 	void integrateAngularEuler(float timeStep);
 	void clearBodyForces();
@@ -126,7 +126,7 @@ private:
 	
 
 	// Object coeffs
-	float m_fBounciness = 1;
+	float m_fBounciness = 0.9;
 	float m_fAirFriction = 1;
 	float* time_link;
 
