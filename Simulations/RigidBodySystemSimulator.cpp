@@ -199,7 +199,8 @@ void RigidBodySystemSimulator::externalForcesCalculations(float timeElapsed)
 		// dont touch
 		v_mouse = Vec3{};
 	}
-		
+	
+	// not the best way but a wise man once said "If it works it is not stupid"
 	double min_dist = 1000000000;
 	unsigned int ind = -1;
 	for (int i = 0; i < vBodies.size(); i++) {
