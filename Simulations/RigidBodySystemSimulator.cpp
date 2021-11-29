@@ -200,11 +200,14 @@ void RigidBodySystemSimulator::externalForcesCalculations(float timeElapsed)
 		v_mouse = Vec3{};
 	}
 	
+	
 	// not the best way but a wise man once said "If it works it is not stupid"
 	double min_dist = 1000000000;
 	unsigned int ind = -1;
 	for (int i = 0; i < vBodies.size(); i++) {
-		auto dist = norm((inputWorld - vBodies[i].vPos));
+		auto pos = vBodies[i].vPos;
+		pos.z = 0;
+		auto dist = norm((inputWorld - pos));
 		if (dist < min_dist) {
 			ind = i;
 			min_dist = dist;
@@ -212,10 +215,12 @@ void RigidBodySystemSimulator::externalForcesCalculations(float timeElapsed)
 	}
 	//apply to the closest
 	if (ind >= 0) vBodies[ind].vForce += v_mouse * vBodies[ind].fMass;
+	
 
 	// F = m*a boiiii
-	for (auto& body : vBodies)
-			body.vForce += (v_gravity) * body.fMass; // Assume gravitiy on center causing no torque
+	for (auto& body : vBodies) {
+		body.vForce += (v_gravity) * body.fMass; // Assume gravitiy on center causing no torque
+	}
 }
 
 void RigidBodySystemSimulator::applyForceOnBody(int i, Vec3 loc, Vec3 force) {
