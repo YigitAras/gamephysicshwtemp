@@ -7,6 +7,7 @@ RigidBodySystemSimulator::RigidBodySystemSimulator(){
 	m_fBounciness = 1;
 	m_trackmouse = { 0,0 };
 	m_oldtrackmouse = {0,0};
+	m_bGroundCollision = false;
 	time_link = NULL;
 }
 
@@ -25,6 +26,8 @@ void RigidBodySystemSimulator::initUI(DrawingUtilitiesClass* DUC)
 	TwAddVarRW(DUC->g_pTweakBar, "Bounciness", TW_TYPE_FLOAT, &m_fBounciness, " min=0 max=1 group='Simulation Params' label='Co-efficient of object bounciness'");
 	TwAddVarRW(DUC->g_pTweakBar, "Friction/Damping", TW_TYPE_FLOAT, &m_fAirFriction, " min=0 max=1 group='Simulation Params' label='Air friction'");
 	TwAddVarCB(DUC->g_pTweakBar, "Gravity", TW_TYPE_DIR3F, SetGravityCallback, GetGravityCallback, &v_gravity, "group='Simulation Params' label='Gravity'");
+	TwAddVarRW(DUC->g_pTweakBar, "Ground Collision", TW_TYPE_BOOLCPP, &this->m_bGroundCollision, "");
+
 }
 
 void TW_CALL RigidBodySystemSimulator::GetGravityCallback(void* value, void* clientData)
@@ -134,7 +137,7 @@ void RigidBodySystemSimulator::notifyCaseChanged(int testCase)
 		addRigidBody({ 0, 0, 0 }, { 0.4, 0.2, 0.2 }, 2);
 		applyForceOnBody(2, { 0.3, 0.5, 0.25 }, { 1,1,0 });
 		
-		addRigidBody({ 0.5, 0.5, 0.5 }, { 0.1, 0.1, 0.1 }, 2);
+		addRigidBody({ 0.5, 0.5, 0.5 }, { 0.2, 0.2, 0.2 }, 2);
 		applyForceOnBody(3, { 0.3, 0.5, 0.25 }, { -1,-1,0 });
 		break;
 	}
@@ -194,6 +197,69 @@ void RigidBodySystemSimulator::applyForceOnBody(int i, Vec3 loc, Vec3 force) {
 	vBodies[i].vTorque += cross(loc - vBodies[i].vPos, force);
 }
 
+//Ground Collision
+RigidBody Ground = RigidBody(Vec3(0, -1.5, 0), Vec3(10000, 1, 10000), 100);
+void RigidBodySystemSimulator::groundCollision() {
+	if (!m_bGroundCollision) return;
+	for (int i = 0; i < vBodies.size(); i++)
+	{
+		
+		auto& b = vBodies[i];
+
+		Mat4 mA = GamePhysics::Mat4(Ground.getObjToWorldMatrix());
+		Mat4 mB = GamePhysics::Mat4(b.getObjToWorldMatrix());
+
+		CollisionInfo ci = checkCollisionSAT(mA, mB);
+			if (ci.isValid) {
+				auto coll_normal = ci.normalWorld;
+				auto coll_pos_world = ci.collisionPointWorld;
+
+				// Calculate velocities at collision point
+				//Ground velocity is 0
+				
+				Vec3 colPosB = coll_pos_world - b.vPos; 				
+				Vec3 veloPointB = b.vVel + cross(b.vAngular_velocity, colPosB);
+
+				// Calculate relative velocity * n
+				auto relativeVelocity = dot(-veloPointB, coll_normal);
+
+				if (relativeVelocity > 0) continue; // already separating
+				// Fill in the Formula
+				// J = numerator / denominator
+				// numerator  = -(1 + c)V_rel * n
+				// denominator = 1/M_a + 1/M_b + [(Ia_inv ( x_a X n)) X x_a + (Ib_inv ( x_b X n)) X x_b] * n
+				auto numerator = -(1 + 1) * relativeVelocity;
+
+				auto reverseInvPartB = cross(b.current_I_inv() * cross(colPosB, coll_normal), colPosB);
+				// 1/M_Ground == 0 
+				auto denominator = /*1 / (double)a.fMass ==0*/ 1 / (double)b.fMass + dot((/*reverseInvPartA==0*/ reverseInvPartB), coll_normal);
+				auto J = numerator / denominator;
+
+				// Update with Impulse
+				
+				b.vVel = b.vVel - J * coll_normal * 1 / b.fMass;
+				b.vAngular_momentum = b.vAngular_momentum - cross(colPosB, J * coll_normal);
+
+
+				
+
+			
+		}
+	}
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
 // METHODS ON INTEGRATION
 
 
@@ -205,6 +271,8 @@ void RigidBodySystemSimulator::simulateTimestep(float timeStep)
 	integrateLinearEuler(timeStep);
 	integrateAngularEuler(timeStep);
 	clearBodyForces();
+	groundCollision();
+	
 }
 
 void RigidBodySystemSimulator::collisionIntegration() {

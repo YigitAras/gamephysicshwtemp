@@ -96,7 +96,7 @@ public:
 	void integrateLinearEuler(float timeStep);
 	void integrateAngularEuler(float timeStep);
 	void clearBodyForces();
-
+	void groundCollision();
 	// ExtraFunctions
 	int getNumberOfRigidBodies();
 	Vec3 getPositionOfRigidBody(int i);
@@ -129,7 +129,7 @@ private:
 	float m_fBounciness = 0.9;
 	float m_fAirFriction = 1;
 	float* time_link;
-
+	bool m_bGroundCollision;
 	// UI Attributes
 	Point2D m_mouse;
 	Point2D m_trackmouse;
