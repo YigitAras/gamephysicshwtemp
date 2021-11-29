@@ -39,13 +39,14 @@ using namespace GamePhysics;
 #endif
 
 DrawingUtilitiesClass * g_pDUC;
-Simulator * g_pSimulator;
+//Simulator * g_pSimulator;
+RigidBodySystemSimulator* g_pSimulator;
 float 	g_fTimestep = 0.001;
 #ifdef ADAPTIVESTEP
 float   g_fTimeFactor = 1;
 #endif
 bool  g_bDraw = true;
-int g_iTestCase = 0;
+int g_iTestCase = 1;
 int g_iPreTestCase = -1;
 bool  g_bSimulateByStep = false;
 bool firstTime = true;
@@ -365,7 +366,10 @@ int main(int argc, char* argv[])
 	g_pSimulator= new MassSpringSystemSimulator();
 #endif
 #ifdef RIGID_BODY_SYSTEM
-	g_pSimulator= new RigidBodySystemSimulator();
+	g_pSimulator = new RigidBodySystemSimulator();
+	g_pSimulator->timeLink(&g_fTimestep);
+	// no other integrator, just Eulersteps
+	//_pSimulator->integratorLink(&g_iIntegrator);
 #endif
 #ifdef SPH_SYSTEM
 	//g_pSimulator= new SPHSystemSimulator();
