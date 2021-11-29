@@ -180,11 +180,41 @@ void RigidBodySystemSimulator::setVelocityOf(int i, Vec3 velocity) {
 void RigidBodySystemSimulator::externalForcesCalculations(float timeElapsed)
 {
 	// TODO: add interactivity probably
-	v_mouse = 0;
+	Point2D mouseDiff;
+	mouseDiff.x = m_trackmouse.x - m_oldtrackmouse.x;
+	mouseDiff.y = m_trackmouse.y - m_oldtrackmouse.y;
+	Vec3 inputWorld;
+	if (mouseDiff.x != 0 || mouseDiff.y != 0)
+	{
+		Mat4 worldViewInv = Mat4(DUC->g_camera.GetWorldMatrix() * DUC->g_camera.GetViewMatrix());
+		worldViewInv = worldViewInv.inverse();
+		Vec3 inputView = Vec3((float)mouseDiff.x, (float)-mouseDiff.y, 0);
+		inputWorld = worldViewInv.transformVectorNormal(inputView);
+		// find a proper scale!
+		float inputScale = 0.0008f;
+		inputWorld = inputWorld * inputScale;
+		v_mouse = inputWorld;
+	}
+	else {
+		// dont touch
+		v_mouse = Vec3{};
+	}
+		
+	double min_dist = 1000000000;
+	unsigned int ind = -1;
+	for (int i = 0; i < vBodies.size(); i++) {
+		auto dist = norm((inputWorld - vBodies[i].vPos));
+		if (dist < min_dist) {
+			ind = i;
+			min_dist = dist;
+		}
+	}
+	//apply to the closest
+	if (ind >= 0) vBodies[ind].vForce += v_mouse * vBodies[ind].fMass;
 
 	// F = m*a boiiii
 	for (auto& body : vBodies)
-			body.vForce += (v_gravity + v_mouse) * body.fMass; // Assume gravitiy on center causing no torque
+			body.vForce += (v_gravity) * body.fMass; // Assume gravitiy on center causing no torque
 }
 
 void RigidBodySystemSimulator::applyForceOnBody(int i, Vec3 loc, Vec3 force) {
@@ -256,9 +286,6 @@ void RigidBodySystemSimulator::collisionIntegration() {
 				 b.vVel = b.vVel - J * coll_normal * 1 / b.fMass;
 				 a.vAngular_momentum = a.vAngular_momentum + cross(colPosA, J * coll_normal);
 				 b.vAngular_momentum = b.vAngular_momentum - cross(colPosB, J * coll_normal);
-				 
-				
-				
 
 			}
 		}
