@@ -381,23 +381,19 @@ bool click = false;
 				c = checkCollisionSAT(f.Obj2WorldMatrix, Obj2WorldMatrix_1);
 				if (!c.isValid)
 					continue;
-				Vec3 v_rel =(cross(b->w, (c.collisionPointWorld - b->pos)) + b->v);//b->v;
+				Vec3 x_a = (c.collisionPointWorld - b->pos);
+				Vec3 v_rel =(cross(b->w, x_a) + b->v);
 			
 			
 				if (dot(v_rel, c.normalWorld) < 0){
-
 					continue;
 				}
-				float J =(-(1+1)*dot(v_rel,c.normalWorld))/
-					(1/b->mass + dot(cross(b->I_current.inverse().transformVector(cross(b->pos, c.normalWorld)), b->pos), c.normalWorld));
-			
-			
 
-				cout <<"normal: "<< c.normalWorld << " n: " << c.collisionPointWorld << " J: " << J << " b->v: " << b->v << " dv: " << J * c.normalWorld / b->mass << endl;
-				
-				b->v[1] = 0;
+				float J =(-(1+1)*dot(v_rel,c.normalWorld))/
+					(1/b->mass + dot(cross(b->I_current.inverse().transformVector(cross(x_a, c.normalWorld)), x_a), c.normalWorld));
+	
 				b->v = b->v  + J * c.normalWorld/b->mass ;
-				b->L = b->L + cross(b->pos, J * c.collisionPointWorld);
+				b->L = b->L + cross(x_a, J * c.normalWorld);
 			
 			}
 
@@ -441,18 +437,20 @@ bool click = false;
 				if (!c.isValid)
 					continue;
 				Vec3 v_rel;
-				v_rel = (cross(b->w, (c.collisionPointWorld - b->pos)) + b->v) - (cross(b2->w, (c.collisionPointWorld - b2->pos)) + b2->v);
+				Vec3 x_a = (c.collisionPointWorld - b->pos);
+				Vec3 x_b = (c.collisionPointWorld - b2->pos);
+				v_rel = (cross(b->w, x_a) + b->v) - (cross(b2->w, x_b) + b2->v);
 				if (dot(v_rel, c.normalWorld) > 0) {
 					continue;
 				}
 				float J = (-(1+1 ) * dot(v_rel, c.normalWorld)) /
-					(1 / b->mass + 1 / b2->mass + dot(cross(b->I_current.inverse().transformVector(cross(b->pos, c.normalWorld)), b->pos) + cross(b2->I_current.inverse().transformVector(cross(b2->pos, c.normalWorld)), b2->pos), c.normalWorld));
+					(1 / b->mass + 1 / b2->mass + dot(cross(b->I_current.inverse().transformVector(cross(x_a, c.normalWorld)), x_a) + cross(b2->I_current.inverse().transformVector(cross(x_b, c.normalWorld)), x_b), c.normalWorld));
 				
 				b->v =b->v + J * c.normalWorld / b->mass;
 				b2->v = b2->v - J * c.normalWorld / b2->mass;
 				
-				b->L = b->L + cross(b->pos, J * (c.collisionPointWorld-b->pos));
-				b2->L = b2->L - cross(b2->pos, J * (c.collisionPointWorld - b2->pos));
+				b->L = b->L + cross(x_a, J * c.normalWorld);
+				b2->L = b2->L - cross(x_b, J * c.normalWorld );
 				
 			}
 		}
