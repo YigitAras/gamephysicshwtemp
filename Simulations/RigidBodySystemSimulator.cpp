@@ -123,6 +123,19 @@ void RigidBodySystemSimulator::notifyCaseChanged(int testCase)
 	}
 	case 3:
 	{
+		*time_link = 0.001f;
+		m_iTestCase = 3;
+		addRigidBody(Vec3(-0.3f, -0.3f, 0.1f), Vec3(0.4f, 0.2f, 0.2f), 4);
+
+		addRigidBody(Vec3(0.10f, 0.40f, 0.10f), Vec3(0.4f, 0.2f, 0.2f), 2);
+		setOrientationOf(1, Quat(Vec3(0.0f, 0.0f, 1.0f), (float)(M_PI) * 0.25f));
+		setVelocityOf(1, Vec3(0.0f, -0.1f, 0.05f));
+		
+		addRigidBody({ 0, 0, 0 }, { 0.4, 0.2, 0.2 }, 2);
+		applyForceOnBody(2, { 0.3, 0.5, 0.25 }, { 1,1,0 });
+		
+		addRigidBody({ 0.5, 0.5, 0.5 }, { 0.1, 0.1, 0.1 }, 2);
+		applyForceOnBody(3, { 0.3, 0.5, 0.25 }, { -1,-1,0 });
 		break;
 	}
 	case 4:
