@@ -1,0 +1,187 @@
+﻿  RigidBodySystemSimulator.cpp
+Z:\code\ex2\Simulations\util\vectorbase.h(11,1): warning C4005: 'NOMINMAX': macro redefinition
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp : message : see previous definition of 'NOMINMAX'
+Z:\code\ex2\Simulations\collisionDetect.h(28,23): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+Z:\code\ex2\Simulations\collisionDetect.h(28,66): warning C4244: '+=': conversion from 'double' to 'int', possible loss of data
+Z:\code\ex2\Simulations\collisionDetect.h(31,76): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+Z:\code\ex2\Simulations\collisionDetect.h(125,21): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\collisionDetect.h(127,21): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\collisionDetect.h(144,21): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\collisionDetect.h(230,21): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\collisionDetect.h(259,21): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\collisionDetect.h(282,21): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\collisionDetect.h(307,21): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(53,72): warning C4244: '=': conversion from 'const Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(54,72): warning C4244: '=': conversion from 'const Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(55,72): warning C4244: '=': conversion from 'const Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(99,17): warning C4305: '=': truncation from 'double' to 'float'
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(120,68): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(121,66): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(133,68): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(137,66): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(141,66): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(145,66): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(149,66): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(152,67): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(156,23): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(164,18): warning C4305: '=': truncation from 'double' to 'float'
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(170,68): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(172,66): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(176,16): warning C4305: '=': truncation from 'double' to 'float'
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(201,22): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(307,12): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(367,21): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(376,22): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(390,13): warning C4244: 'initializing': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(404,21): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(427,21): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(433,21): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(436,26): warning C4018: '<': signed/unsigned mismatch
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(447,13): warning C4244: 'initializing': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+Z:\code\ex2\Simulations\util\quaternion.h(67,44): warning C4244: 'argument': conversion from 'const Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+Z:\code\ex2\Simulations\util\quaternion.h(66): message : while compiling class template member function 'GamePhysics::matrix4x4<double> GamePhysics::Quaternion<GamePhysics::Real>::getRotMat(void) const'
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(346): message : see reference to function template instantiation 'GamePhysics::matrix4x4<double> GamePhysics::Quaternion<GamePhysics::Real>::getRotMat(void) const' being compiled
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.h(19): message : see reference to class template instantiation 'GamePhysics::Quaternion<GamePhysics::Real>' being compiled
+Z:\code\ex2\Simulations\util\quaternion.h(67,42): warning C4244: 'argument': conversion from 'const Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+Z:\code\ex2\Simulations\util\quaternion.h(67,40): warning C4244: 'argument': conversion from 'const Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+Z:\code\ex2\Simulations\util\quaternion.h(67,38): warning C4244: 'argument': conversion from 'const Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+Z:\code\ex2\Simulations\util\vectorbase.h(204,36): warning C4244: 'argument': conversion from 'const Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+Z:\code\ex2\Simulations\util\vectorbase.h(203): message : while compiling class template member function 'DirectX::XMVECTOR GamePhysics::vector3Dim<GamePhysics::Real>::toDirectXVector(void) const'
+Z:\code\ex2\Simulations\DrawingUtilitiesClass.h(285): message : see reference to function template instantiation 'DirectX::XMVECTOR GamePhysics::vector3Dim<GamePhysics::Real>::toDirectXVector(void) const' being compiled
+Z:\code\ex2\Simulations\util\vectorbase.h(859): message : see reference to class template instantiation 'GamePhysics::vector3Dim<GamePhysics::Real>' being compiled
+Z:\code\ex2\Simulations\util\vectorbase.h(204,34): warning C4244: 'argument': conversion from 'const Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+Z:\code\ex2\Simulations\util\vectorbase.h(204,32): warning C4244: 'argument': conversion from 'const Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=GamePhysics::Real
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(777,79): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(773): message : while compiling class template member function 'DirectX::XMMATRIX GamePhysics::matrix4x4<double>::toDirectXMatrix(void)'
+Z:\code\ex2\Simulations\DrawingUtilitiesClass.h(380): message : see reference to function template instantiation 'DirectX::XMMATRIX GamePhysics::matrix4x4<double>::toDirectXMatrix(void)' being compiled
+Z:\code\ex2\Simulations\DrawingUtilitiesClass.h(379): message : see reference to class template instantiation 'GamePhysics::matrix4x4<double>' being compiled
+Z:\code\ex2\Simulations\util\matrixbase.h(777,61): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(777,43): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(777,25): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(776,79): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(776,61): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(776,43): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(776,25): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(775,79): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(775,61): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(775,43): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(775,25): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(774,97): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(774,79): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(774,61): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\matrixbase.h(774,43): warning C4244: 'argument': conversion from 'Scalar' to 'float', possible loss of data
+          with
+          [
+              Scalar=double
+          ]
+Z:\code\ex2\Simulations\util\vectorbase.h(1092,2): warning C4996: '_snprintf': This function or variable may be unsafe. Consider using _snprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+Z:\code\ex2\Simulations\RigidBodySystemSimulator.cpp(231): message : see reference to function template instantiation 'std::ostream &GamePhysics::operator <<<GamePhysics::Real>(std::ostream &,const GamePhysics::vector3Dim<GamePhysics::Real> &)' being compiled
+  Demo_2017.vcxproj -> Z:\code\ex2\Win32\Debug\Simulations.lib
