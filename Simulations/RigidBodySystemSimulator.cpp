@@ -21,6 +21,7 @@ bool click = false;
 		f.trans.initTranslation(f.pos[0], f.pos[1], f.pos[2]);
 		f.Obj2WorldMatrix = f.scale * f.R * f.trans;
 		scale = 0;
+
 	}
 
 	// Functions
@@ -380,7 +381,7 @@ bool click = false;
 				c = checkCollisionSAT(f.Obj2WorldMatrix, Obj2WorldMatrix_1);
 				if (!c.isValid)
 					continue;
-				Vec3 v_rel =(cross(b->w, c.collisionPointWorld) + b->v);//b->v;
+				Vec3 v_rel =(cross(b->w, (c.collisionPointWorld - b->pos)) + b->v);//b->v;
 			
 			
 				if (dot(v_rel, c.normalWorld) < 0){
@@ -456,4 +457,5 @@ bool click = false;
 			}
 		}
 
+		
 	}
