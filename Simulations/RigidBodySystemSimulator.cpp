@@ -101,7 +101,7 @@ void RigidBodySystemSimulator::notifyCaseChanged(int testCase)
 		break;
 	}
 	case 1:
-		*time_link = 0.01f;
+		*time_link = 0.001f;
 		m_iTestCase = 1;
 		addRigidBody({ 0, 0, 0 }, { 1, 0.6, 0.5 }, 2);
 		applyForceOnBody(0, { 0.3, 0.5, 0.25 }, { 1,1,0 });
@@ -117,6 +117,8 @@ void RigidBodySystemSimulator::notifyCaseChanged(int testCase)
 		addRigidBody(Vec3(0.0f, 0.2f, 0.0f), Vec3(0.4f, 0.2f, 0.2f), 2);
 		setOrientationOf(1, Quat(Vec3(0.0f, 0.0f, 1.0f), (float)(M_PI) * 0.25f));
 		setVelocityOf(1, Vec3(0.0f, -0.1f, 0.05f));
+		
+		
 		break;
 	}
 	case 3:
@@ -197,36 +199,39 @@ void RigidBodySystemSimulator::collisionIntegration() {
 	{
 		// check each body
 		auto& a = vBodies[i];
-		Mat4 MatrixA = GamePhysics::Mat4(a.getObjToWorldMatrix());
+		Mat4 mA = GamePhysics::Mat4(a.getObjToWorldMatrix());
 
 		for (auto j = i + 1; j < vBodies.size(); j++)
 		{
 			auto& b = vBodies[j];
-			Mat4 MatrixB = GamePhysics::Mat4(b.getObjToWorldMatrix());
-			CollisionInfo ci = checkCollisionSAT(MatrixA, MatrixB);
+			Mat4 mB = GamePhysics::Mat4(b.getObjToWorldMatrix());
+			CollisionInfo ci = checkCollisionSAT(mA, mB);
 			if (ci.isValid) {
 				auto coll_normal = ci.normalWorld;
 				auto coll_pos_world = ci.collisionPointWorld;
 
 				// Calculate velocities at collision point
 
-				Vec3 colPosA = coll_pos_world - a.vPos;
-				Vec3 colPosB = coll_pos_world - b.vPos;
+				Vec3 colPosA = coll_pos_world - a.vPos; //relative a
+				Vec3 colPosB = coll_pos_world - b.vPos; // relative b
 
 				Vec3 veloPointA = a.vVel + cross(a.vAngular_velocity, colPosA);
 				Vec3 veloPointB = b.vVel + cross(b.vAngular_velocity, colPosB);
 
-				// Calculate relative velocity
-				double relativeVelocity = dot(coll_normal, veloPointA - veloPointB);
+				// Calculate relative velocity * n
+				auto relativeVelocity = dot(veloPointA - veloPointB, coll_normal);
 
+				if (relativeVelocity > 0) continue; // already separating
 				// Fill in the Formula
 				// J = numerator / denominator
 				// numerator  = -(1 + c)V_rel * n
 				// denominator = 1/M_a + 1/M_b + [(Ia_inv ( x_a X n)) X x_a + (Ib_inv ( x_b X n)) X x_b] * n
 				auto numerator = -(1 + m_fBounciness) * relativeVelocity;
+				
 				auto reverseInvPartA = cross(a.current_I_inv() * cross(colPosA, coll_normal), colPosA);
 				auto reverseInvPartB = cross(b.current_I_inv() * cross(colPosB, coll_normal), colPosB);
 
+				// This is absolutely wrong :D:D:D:D
 				//auto reverseInvPartA = cross(a.I_inv * cross(colPosA, coll_normal), colPosA);
 				//auto reverseInvPartB = cross(b.I_inv * cross(colPosB, coll_normal), colPosB);
 
@@ -238,6 +243,7 @@ void RigidBodySystemSimulator::collisionIntegration() {
 				 b.vVel = b.vVel - J * coll_normal * 1 / b.fMass;
 				 a.vAngular_momentum = a.vAngular_momentum + cross(colPosA, J * coll_normal);
 				 b.vAngular_momentum = b.vAngular_momentum - cross(colPosB, J * coll_normal);
+				 
 				
 				
 

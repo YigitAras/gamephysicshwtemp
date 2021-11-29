@@ -50,7 +50,7 @@ public:
 
 		a.initTranslation(vPos[0], vPos[1], vPos[2]);
 		const XMMATRIX Translation = a.toDirectXMatrix();
-		const XMMATRIX ObjToWorld = Scale * Rotation * Translation;
+		const XMMATRIX ObjToWorld = (Scale * Rotation) * Translation;
 		return ObjToWorld;
 	}
 
