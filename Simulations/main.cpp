@@ -33,18 +33,18 @@ using namespace GamePhysics;
 #include "MassSpringSystemSimulator.h"
 #endif
 #ifdef RIGID_BODY_SYSTEM
-//#include "RigidBodySystemSimulator.h"
+#include "RigidBodySystemSimulator.h"
 #endif
 #ifdef SPH_SYSTEM
-//#include "SPHSystemSimulator.h"
+#include "SphereSystemSimulator.h"
 #endif
 
 #ifdef DIFFUSION_SYSTEM
 #include "DiffusionSimulator.h"
+DiffusionSimulator* g_pSimulator;
 #endif
 
 DrawingUtilitiesClass * g_pDUC;
-Simulator * g_pSimulator;
 float 	g_fTimestep = 0.001;
 #ifdef ADAPTIVESTEP
 float   g_fTimeFactor = 1;
@@ -58,6 +58,58 @@ bool firstTime = true;
 FFmpeg* g_pFFmpegVideoRecorder = nullptr;
 
 
+// Callback setup for TweakBar!
+void TW_CALL setRadiusCallback(const void* value, void* clientData)
+{
+	UINT16 val = *(const UINT16*)value;
+	g_pSimulator->setSphereRadius((int)val);
+}
+
+void TW_CALL getRadiusCallback(void* value, void* clientData)
+{
+	*(UINT16 *)value = (UINT16) g_pSimulator->getSphereRadius();
+}
+
+
+void TW_CALL setSpacingCallback(const void* value, void* clientData)
+{
+	UINT16 val = *(const UINT16*)value;
+	g_pSimulator->setSphereSpacing((int)val);
+}
+
+void TW_CALL getSpacingCallback(void* value, void* clientData)
+{
+	*(UINT16*)value = (UINT16)g_pSimulator->getSphereSpacing();
+}
+
+void TW_CALL setGridWidthCallback(const void* value, void* clientData)
+{
+	UINT16 val = *(const UINT16*)value;
+	g_pSimulator->setGridWidth((int)val);
+}
+
+void TW_CALL getGridWidthCallback(void* value, void* clientData)
+{
+	*(UINT16*)value = (UINT16)g_pSimulator->getGridWidth();
+}
+
+
+void TW_CALL setGridHeightCallback(const void* value, void* clientData)
+{
+	UINT16 val = *(const UINT16*)value;
+	g_pSimulator->setGridHeight((int)val);
+}
+
+void TW_CALL getGridHeightCallback(void* value, void* clientData)
+{
+	*(UINT16*)value = (UINT16)g_pSimulator->getGridHeight();
+}
+
+float emissiveMult = 1;
+float specMult = 5; 
+float specPower = 70;
+float diffMult = 0.3;
+
 void initTweakBar(){
 	g_pDUC->g_pTweakBar = TwNewBar("TweakBar");
 	TwDefine(" TweakBar color='0 128 128' alpha=128 ");
@@ -70,6 +122,18 @@ void initTweakBar(){
 	TwAddVarRW(g_pDUC->g_pTweakBar, "RunStep", TW_TYPE_BOOLCPP, &g_bSimulateByStep, "");
 	TwAddVarRW(g_pDUC->g_pTweakBar, "Draw Simulation",  TW_TYPE_BOOLCPP, &g_bDraw, "");
 	TwAddVarRW(g_pDUC->g_pTweakBar, "Timestep", TW_TYPE_FLOAT, &g_fTimestep, "step=0.0001 min=0.0001");
+
+	// Added by Rafa
+	TwAddVarCB(g_pDUC->g_pTweakBar, "Grid Width", TW_TYPE_UINT16, setGridWidthCallback, getGridWidthCallback, nullptr, "min=0");
+	TwAddVarCB(g_pDUC->g_pTweakBar, "Grid Height", TW_TYPE_UINT16, setGridHeightCallback, getGridHeightCallback, nullptr, "min=0");
+	TwAddVarCB(g_pDUC->g_pTweakBar, "Particle Radius", TW_TYPE_UINT16, setRadiusCallback, getRadiusCallback, nullptr,  "min=1");
+	TwAddVarCB(g_pDUC->g_pTweakBar, "Particle Spacing", TW_TYPE_UINT16, setSpacingCallback, getSpacingCallback, nullptr, "min=1");
+
+	TwAddVarRW(g_pDUC->g_pTweakBar, "Emissive Color", TW_TYPE_FLOAT, &emissiveMult, "step=0.1 min=0.001");
+	TwAddVarRW(g_pDUC->g_pTweakBar, "Specular Color", TW_TYPE_FLOAT, &specMult, "step=0.1 min=0.001");
+	TwAddVarRW(g_pDUC->g_pTweakBar, "Specular Power", TW_TYPE_FLOAT, &specPower, "step=0.1 min=0.001");
+	TwAddVarRW(g_pDUC->g_pTweakBar, "Diffusive Color", TW_TYPE_FLOAT, &diffMult, "step=0.1 min=0.001");
+
 #ifdef ADAPTIVESTEP
 	TwAddVarRW(g_pDUC->g_pTweakBar, "Time Factor", TW_TYPE_FLOAT, &g_fTimeFactor, "step=0.01   min=0.01");
 #endif
@@ -313,7 +377,7 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
      g_pDUC->DrawBoundingBox(pd3dImmediateContext);
 
 	// Draw Simulator
-	if(g_bDraw)g_pSimulator->drawFrame(pd3dImmediateContext);
+	if(g_bDraw)g_pSimulator->drawFrame(pd3dImmediateContext, emissiveMult, specMult, specPower, diffMult);
 
 	// Draw GUI
     TwDraw();
@@ -370,10 +434,10 @@ int main(int argc, char* argv[])
 	g_pSimulator= new MassSpringSystemSimulator();
 #endif
 #ifdef RIGID_BODY_SYSTEM
-	//g_pSimulator= new RigidBodySystemSimulator();
+	g_pSimulator= new RigidBodySystemSimulator();
 #endif
 #ifdef SPH_SYSTEM
-	//g_pSimulator= new SPHSystemSimulator();
+	g_pSimulator= new SphereSystemSimulator();
 #endif
 #ifdef DIFFUSION_SYSTEM
 	g_pSimulator= new DiffusionSimulator();

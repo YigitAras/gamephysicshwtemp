@@ -1,9 +1,91 @@
 #include "DiffusionSimulator.h"
 #include "pcgsolver.h"
+
 using namespace std;
 
-Grid::Grid() {
+void Grid::createMatrix(int width, int height)
+{
+	m_width = width;
+	m_height = height;
+	matrix = new float* [height];
+
+	for (int i = 0; i < m_height; i++)
+	{
+		matrix[i] = new float[width];
+	}
 }
+
+
+void Grid::fillWith(float val) {
+	for (int y = 0; y < m_height; y++)
+	{
+		for (int x = 0; x < m_width; x++)
+		{
+			matrix[y][x] = val;
+		}
+
+	}
+}
+
+int Grid::getHeight() { return m_height; };
+int Grid::getWidth() { return m_width; };
+
+
+void  Grid::setRegionTo(int cornerX, int cornerY, int width, int height, float value) {
+	if (cornerX + width - 1 >= m_width) return;
+	if (cornerY + height - 1 >= m_height) return;
+
+	for (int y = cornerY; y < cornerY + height; y++)
+	{
+		for (int x = cornerX; x < cornerX + width; x++)
+		{
+			matrix[y][x] = value;
+		}
+	}
+
+}
+
+std::ostream& operator<< (std::ostream& out, Grid const& grid) {
+	for (int i = 0; i < grid.m_height; ++i)
+	{
+		for (int j = 0; j < grid.m_width; ++j)
+		{
+			out << grid.matrix[i][j] << ' ';
+		}
+		out << std::endl;
+	}
+	return out;
+}
+
+
+Grid::Grid(int width, int height) {
+	createMatrix(width, height);
+	fillWith(0.0);
+}
+
+Grid::Grid(int width, int height, float initialValue) 
+{
+	createMatrix(width, height);
+	fillWith(initialValue);
+}
+
+void Grid::setBorderTo(float val) {
+	// Simple and stupid border fill
+	
+
+	for (int x = 0; x < m_width; x++)
+	{
+		matrix[0][x] = val;
+		matrix[m_height - 1][x] = val;
+	}
+
+	for (int y = 0; y < m_height; y++)
+	{
+		matrix[y][0] = val;
+		matrix[y][m_width - 1] = val;
+	}
+}
+
 
 
 DiffusionSimulator::DiffusionSimulator()
@@ -13,7 +95,54 @@ DiffusionSimulator::DiffusionSimulator()
 	m_vfMovableObjectFinalPos = Vec3();
 	m_vfRotate = Vec3();
 	// to be implemented
+
+
+	m_gridWidth = 20;
+	m_gridHeight = 20;
+	m_sphereRadius = 10;
+	m_sphereSpacing = 8;
+	T = new Grid(m_gridWidth, m_gridHeight, 0);
+
+	// Initial condition
+
+	T->setRegionTo(m_gridWidth / 2, m_gridHeight / 2, 2, 5, 100);
+
+	//T->setRegionTo(m_gridWidth / 2 - 10, m_gridHeight / 2 - 10, 3, 3, 300);
+	
+	T->setRegionTo(0, m_gridHeight - 6, 5, 5, 700);
+
+
+	prevT = new Grid(m_gridWidth, m_gridHeight, 0);
+	cout << T->matrix[m_gridHeight - 1][m_gridWidth - 1] << endl;
 }
+
+
+int DiffusionSimulator::getSphereRadius() { return m_sphereRadius; };
+void DiffusionSimulator::setSphereRadius(int radius) {
+	if (radius <= 0) return;
+	m_sphereRadius = radius;
+};
+
+int DiffusionSimulator::getSphereSpacing() { return m_sphereSpacing; };
+void DiffusionSimulator::setSphereSpacing(int space) {
+	if (space <= 0) return;
+	m_sphereSpacing = space;
+};
+
+
+int DiffusionSimulator::getGridWidth() { return m_gridWidth; };
+void DiffusionSimulator::setGridWidth(int width) {
+	if (width <= 0) return;
+	m_gridWidth = width;
+};
+
+
+int DiffusionSimulator::getGridHeight() { return m_gridHeight; };
+void DiffusionSimulator::setGridHeight(int height) {
+	if (height <= 0) return;
+	m_gridHeight = height;
+};
+
 
 const char * DiffusionSimulator::getTestCasesStr(){
 	return "Explicit_solver, Implicit_solver";
@@ -54,10 +183,44 @@ void DiffusionSimulator::notifyCaseChanged(int testCase)
 	}
 }
 
-Grid* DiffusionSimulator::diffuseTemperatureExplicit() {//add your own parameters
-	Grid* newT = new Grid();
-	// to be implemented
-	//make sure that the temperature in boundary cells stays zero
+
+
+float DiffusionSimulator::computeNewExplicitU(int x, int y, float timeStep) {
+	float c = 0.4;
+	
+	float top = T->matrix[y - 1][x];
+	float down = T->matrix[y + 1][x];
+	float center = T->matrix[y][x];
+	float left = T->matrix[y][x - 1];
+	float right = T->matrix[y][x + 1];
+
+
+	// Asuming deltaX = deltaY = 1
+	// Simplified from class slides
+	float firstTerm = pow(c, 2) * pow(timeStep, 2) * (
+		right + left + top + down - 4.0 * center
+		);
+	return firstTerm + 2.0 * center - prevT->matrix[y][x];
+}
+
+
+
+Grid* DiffusionSimulator::diffuseTemperatureExplicit(float timeStep) {//add your own parameters
+	// Create New matrix filled with zeroes
+	Grid* newT = new Grid(m_gridWidth, m_gridHeight, 1);
+
+
+	// Avoid boundaries as they should always be zero
+	for (int y = 1; y < m_gridHeight - 1; y++)
+	{
+		for (int x = 1; x < m_gridWidth - 1; x++)
+		{
+
+			float val = computeNewExplicitU(x, y, timeStep);
+			newT->matrix[y][x] = val;
+		}
+	}
+
 	return newT;
 }
 
@@ -124,7 +287,12 @@ void DiffusionSimulator::simulateTimestep(float timeStep)
 	switch (m_iTestCase)
 	{
 	case 0:
-		T = diffuseTemperatureExplicit();
+		prevT = T;
+		//cout << *T << "\n\n";
+		T = diffuseTemperatureExplicit(timeStep * 500);
+		//cout << *T << "\n\n";
+
+		//exit(0);
 		break;
 	case 1:
 		diffuseTemperatureImplicit();
@@ -132,22 +300,47 @@ void DiffusionSimulator::simulateTimestep(float timeStep)
 	}
 }
 
-void DiffusionSimulator::drawObjects()
+
+
+Vec3 colorFunc(float x) {
+	float y = pow(x, 2);
+	return Vec3(y, 0, 1 - y);
+}
+
+void DiffusionSimulator::drawObjects(float emissiveMult, float specMult, float specPower, float diffMult)
 {
-	// to be implemented
-	//visualization
+
+	float sphereScale = m_sphereRadius / 100.0;
+	float spaceScale = m_sphereSpacing / 50.0;
+	float value;
+
+
+	//cout << DUC->g_pTweakBar
+
+	for (int y = 0; y < m_gridHeight; y++)
+	{
+		for (int x = 0; x < m_gridWidth; x++)
+		{
+
+			float input = T->matrix[y][x] / 10.0;
+			// float input = x / (m_gridWidth - 1.0);
+			DUC->setUpLighting(colorFunc(input), specMult * Vec3(1, 1, 1), specPower, diffMult * 0.05 * Vec3(1, 1, 1));
+			DUC->drawSphere(Vec3(x * spaceScale, y * spaceScale, 0), Vec3(sphereScale, sphereScale, sphereScale));
+		}
+	}
 }
 
 
-void DiffusionSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
+void DiffusionSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext, float emissiveMult, float specMult, float specPower, float diffMult)
 {
-	drawObjects();
+	drawObjects(emissiveMult, specMult, specPower, diffMult);
 }
 
 void DiffusionSimulator::onClick(int x, int y)
 {
 	m_trackmouse.x = x;
 	m_trackmouse.y = y;
+	cout << *T << "\n\n";
 }
 
 void DiffusionSimulator::onMouse(int x, int y)
