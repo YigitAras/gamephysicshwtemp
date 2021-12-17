@@ -41,11 +41,12 @@ using namespace GamePhysics;
 
 #ifdef DIFFUSION_SYSTEM
 #include "DiffusionSimulator.h"
-DiffusionSimulator* g_pSimulator;
 #endif
 
+
+Simulator* g_pSimulator;
 DrawingUtilitiesClass * g_pDUC;
-float 	g_fTimestep = 0.001;
+float 	g_fTimestep = 0.01;
 #ifdef ADAPTIVESTEP
 float   g_fTimeFactor = 1;
 #endif
@@ -56,54 +57,6 @@ bool  g_bSimulateByStep = false;
 bool firstTime = true;
 // Video recorder
 FFmpeg* g_pFFmpegVideoRecorder = nullptr;
-
-
-// Callback setup for TweakBar!
-void TW_CALL setRadiusCallback(const void* value, void* clientData)
-{
-	UINT16 val = *(const UINT16*)value;
-	g_pSimulator->setSphereRadius((int)val);
-}
-
-void TW_CALL getRadiusCallback(void* value, void* clientData)
-{
-	*(UINT16 *)value = (UINT16) g_pSimulator->getSphereRadius();
-}
-
-
-void TW_CALL setSpacingCallback(const void* value, void* clientData)
-{
-	UINT16 val = *(const UINT16*)value;
-	g_pSimulator->setSphereSpacing((int)val);
-}
-
-void TW_CALL getSpacingCallback(void* value, void* clientData)
-{
-	*(UINT16*)value = (UINT16)g_pSimulator->getSphereSpacing();
-}
-
-void TW_CALL setGridWidthCallback(const void* value, void* clientData)
-{
-	UINT16 val = *(const UINT16*)value;
-	g_pSimulator->setGridWidth((int)val);
-}
-
-void TW_CALL getGridWidthCallback(void* value, void* clientData)
-{
-	*(UINT16*)value = (UINT16)g_pSimulator->getGridWidth();
-}
-
-
-void TW_CALL setGridHeightCallback(const void* value, void* clientData)
-{
-	UINT16 val = *(const UINT16*)value;
-	g_pSimulator->setGridHeight((int)val);
-}
-
-void TW_CALL getGridHeightCallback(void* value, void* clientData)
-{
-	*(UINT16*)value = (UINT16)g_pSimulator->getGridHeight();
-}
 
 float emissiveMult = 1;
 float specMult = 5; 
@@ -122,17 +75,6 @@ void initTweakBar(){
 	TwAddVarRW(g_pDUC->g_pTweakBar, "RunStep", TW_TYPE_BOOLCPP, &g_bSimulateByStep, "");
 	TwAddVarRW(g_pDUC->g_pTweakBar, "Draw Simulation",  TW_TYPE_BOOLCPP, &g_bDraw, "");
 	TwAddVarRW(g_pDUC->g_pTweakBar, "Timestep", TW_TYPE_FLOAT, &g_fTimestep, "step=0.0001 min=0.0001");
-
-	// Added by Rafa
-	TwAddVarCB(g_pDUC->g_pTweakBar, "Grid Width", TW_TYPE_UINT16, setGridWidthCallback, getGridWidthCallback, nullptr, "min=0");
-	TwAddVarCB(g_pDUC->g_pTweakBar, "Grid Height", TW_TYPE_UINT16, setGridHeightCallback, getGridHeightCallback, nullptr, "min=0");
-	TwAddVarCB(g_pDUC->g_pTweakBar, "Particle Radius", TW_TYPE_UINT16, setRadiusCallback, getRadiusCallback, nullptr,  "min=1");
-	TwAddVarCB(g_pDUC->g_pTweakBar, "Particle Spacing", TW_TYPE_UINT16, setSpacingCallback, getSpacingCallback, nullptr, "min=1");
-
-	TwAddVarRW(g_pDUC->g_pTweakBar, "Emissive Color", TW_TYPE_FLOAT, &emissiveMult, "step=0.1 min=0.001");
-	TwAddVarRW(g_pDUC->g_pTweakBar, "Specular Color", TW_TYPE_FLOAT, &specMult, "step=0.1 min=0.001");
-	TwAddVarRW(g_pDUC->g_pTweakBar, "Specular Power", TW_TYPE_FLOAT, &specPower, "step=0.1 min=0.001");
-	TwAddVarRW(g_pDUC->g_pTweakBar, "Diffusive Color", TW_TYPE_FLOAT, &diffMult, "step=0.1 min=0.001");
 
 #ifdef ADAPTIVESTEP
 	TwAddVarRW(g_pDUC->g_pTweakBar, "Time Factor", TW_TYPE_FLOAT, &g_fTimeFactor, "step=0.01   min=0.01");
@@ -371,10 +313,10 @@ void CALLBACK OnD3D11FrameRender( ID3D11Device* pd3dDevice, ID3D11DeviceContext*
 	pd3dImmediateContext->ClearDepthStencilView( pDSV, D3D11_CLEAR_DEPTH, 1.0f, 0 );
 
     // Draw floor
-    g_pDUC->DrawFloor(pd3dImmediateContext);
+    // g_pDUC->DrawFloor(pd3dImmediateContext);
 
     // Draw axis box
-     g_pDUC->DrawBoundingBox(pd3dImmediateContext);
+    // g_pDUC->DrawBoundingBox(pd3dImmediateContext);
 
 	// Draw Simulator
 	if(g_bDraw)g_pSimulator->drawFrame(pd3dImmediateContext, emissiveMult, specMult, specPower, diffMult);

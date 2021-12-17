@@ -3,39 +3,9 @@
 
 #include "Simulator.h"
 #include "vectorbase.h"
+#include "Grid.h"
 #include <vector>
-
-//impement your own grid class for saving grid data
-class Grid {
-public:
-	// Construtors
-	Grid(int width, int height);
-	Grid(int width, int height, float initialValue);
-	friend ostream& operator<< (std::ostream& out, Grid const& grid);
-	
-	float** matrix;
-
-	int getHeight();
-	int getWidth();
-	
-	
-	void setBorderTo(float val);
-	void setRegionTo(int cornerX, int cornerY, int width, int height, float value);
-
-
-
-
-private:
-	// Attributes
-	int m_width;
-	int m_height;
-	
-
-	void createMatrix(int width, int height);
-	void fillWith(float val);
-};
-
-
+#include "pcgsolver.h"
 
 class DiffusionSimulator:public Simulator{
 public:
@@ -55,22 +25,10 @@ public:
 	// Specific Functions
 	void drawObjects(float emissiveMult, float specMult, float specPower, float diffMult);
 	Grid* diffuseTemperatureExplicit(float timeStep);
-	void diffuseTemperatureImplicit();
-
-
-	// Added by Rafa
-
-	int getSphereRadius();
-	void setSphereRadius(int radius);
-	
-	int getSphereSpacing();
-	void setSphereSpacing(int spacing);
-
+	void diffuseTemperatureImplicit(float timeStep);
 	int getGridWidth();
-	void setGridWidth(int width);
-
 	int getGridHeight();
-	void setGridHeight(int height);
+	Grid* getT();
 
 	
 private:
@@ -82,12 +40,16 @@ private:
 	Point2D m_trackmouse;
 	Point2D m_oldtrackmouse;
 	Grid *T; //save results of every time step
-	Grid *prevT;
-
-
-	// by Rafa
+	Grid *newT;
+	float alpha;
 
 	float computeNewExplicitU(int x, int y, float timeStep);
+
+	void gridInitialSetup();
+
+	void fillT(vector<Real>& x);
+	void setupB(vector<Real>& b);
+	void setupA(SparseMatrix<Real>& A, double factor);
 
 	int m_gridWidth;
 	int m_gridHeight;
