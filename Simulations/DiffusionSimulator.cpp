@@ -6,14 +6,9 @@ using namespace std;
 DiffusionSimulator::DiffusionSimulator()
 {
 	m_iTestCase = 0;
-	m_vfMovableObjectPos = Vec3(5, 5, 5);
-	m_vfMovableObjectFinalPos = Vec3();
-	m_vfRotate = Vec3();
-	// to be implemented
 
-
-	m_gridWidth = 50;
-	m_gridHeight = 50;
+	m_gridWidth = 20;
+	m_gridHeight = 20;
 	m_sphereRadius = 10;
 	m_sphereSpacing = 8;
 	alpha = 20;
@@ -27,7 +22,7 @@ void DiffusionSimulator::gridInitialSetup() {
 	T->fillWith(0);
 	newT->fillWith(0);
 	T->setRegionTo(m_gridWidth / 2, m_gridHeight / 2, 2, 5, -100);
-	T->setRegionTo(m_gridWidth / 2 - 10, m_gridHeight / 2 - 10, 3, 3, 300);
+	T->setRegionTo(m_gridWidth - 4, m_gridHeight - 6, 3, 5, 300);
 	T->setRegionTo(1, m_gridHeight - 6, 5, 5, 700);
 	T->setBorderToInitial();
 }
@@ -193,6 +188,8 @@ void DiffusionSimulator::diffuseTemperatureImplicit(float timeStep) {//add your 
 	solver.solve(*A, *b, x, ret_pcg_residual, ret_pcg_iterations, 0);
 	// x contains the new temperature values
 	fillT(x);//copy x to T
+	delete A;
+	delete b;
 }
 
 
@@ -209,7 +206,7 @@ void DiffusionSimulator::simulateTimestep(float timeStep)
 		break;
 	}
 	case 1:
-		diffuseTemperatureImplicit(timeStep);
+		diffuseTemperatureImplicit(timeStep * 15);
 		break;
 	}
 
