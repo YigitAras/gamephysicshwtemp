@@ -1,2 +1,5 @@
-.vs/*
+Win32/*
 */Win32/*
+.vs/*
+Debug
+*.user

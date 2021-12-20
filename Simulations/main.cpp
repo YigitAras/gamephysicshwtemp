@@ -20,10 +20,11 @@ using namespace GamePhysics;
 
 //#define ADAPTIVESTEP
 
-#define TEMPLATE_DEMO
+//#define TEMPLATE_DEMO
 //#define MASS_SPRING_SYSTEM
 //#define RIGID_BODY_SYSTEM
 //#define SPH_SYSTEM
+#define DIFFUSION_SYSTEM
 
 #ifdef TEMPLATE_DEMO
 #include "TemplateSimulator.h"
@@ -36,6 +37,10 @@ using namespace GamePhysics;
 #endif
 #ifdef SPH_SYSTEM
 //#include "SPHSystemSimulator.h"
+#endif
+
+#ifdef DIFFUSION_SYSTEM
+#include "DiffusionSimulator.h"
 #endif
 
 DrawingUtilitiesClass * g_pDUC;
@@ -369,6 +374,10 @@ int main(int argc, char* argv[])
 #endif
 #ifdef SPH_SYSTEM
 	//g_pSimulator= new SPHSystemSimulator();
+#endif
+#ifdef DIFFUSION_SYSTEM
+	g_pSimulator= new DiffusionSimulator();
+	((DiffusionSimulator*)g_pSimulator)->set_time_pointer(&g_fTimestep); 
 #endif
 	g_pSimulator->reset();
 
