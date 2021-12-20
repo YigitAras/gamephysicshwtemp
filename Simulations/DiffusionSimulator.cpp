@@ -15,12 +15,17 @@ DiffusionSimulator::DiffusionSimulator()
 	T = new Grid(m_gridWidth, m_gridHeight, 0);
 	newT = new Grid(m_gridWidth, m_gridHeight, 0);
 	gridInitialSetup();
+
+	// We save the pointer for callback reference
+	INSTANCE = this;
 }
 
 
 void DiffusionSimulator::gridInitialSetup() {
 	T->fillWith(0);
 	newT->fillWith(0);
+
+	// Change this to see different effects in the simulation
 	T->setRegionTo(m_gridWidth / 2, m_gridHeight / 2, 2, 5, -100);
 	T->setRegionTo(m_gridWidth - 4, m_gridHeight - 6, 3, 5, 300);
 	T->setRegionTo(1, m_gridHeight - 6, 5, 5, 700);
@@ -39,6 +44,56 @@ void DiffusionSimulator::reset(){
 		gridInitialSetup();
 }
 
+
+int DiffusionSimulator::getGridWidth() { return m_gridWidth; };
+void DiffusionSimulator::setGridWidth(int width) {
+	if (width <= 0) return;
+	newT->resize(width, m_gridHeight);
+	T->resize(width, m_gridHeight);
+	m_gridWidth = width;
+};
+
+
+int DiffusionSimulator::getGridHeight() { return m_gridHeight; };
+void DiffusionSimulator::setGridHeight(int height) {
+	if (height <= 0) return;
+	T->resize(m_gridWidth, height);
+	newT->resize(m_gridWidth, height);
+	m_gridHeight = height;
+};
+
+Grid* DiffusionSimulator::getT() { return T;  }
+
+
+void TW_CALL setGridWidthCallback(const void* value, void* clientData)
+{
+	UINT16 val = *(const UINT16*)value;
+	INSTANCE->setGridWidth((int)val);
+}
+
+void TW_CALL getGridWidthCallback(void* value, void* clientData)
+{
+	*(UINT16*)value = (UINT16) INSTANCE->getGridWidth();
+}
+
+
+void TW_CALL setGridHeightCallback(const void* value, void* clientData)
+{
+	UINT16 val = *(const UINT16*)value;
+	INSTANCE->setGridHeight((int)val);
+}
+
+void TW_CALL getGridHeightCallback(void* value, void* clientData)
+{
+	*(UINT16*)value = (UINT16)INSTANCE->getGridHeight();
+}
+
+void TW_CALL stepForwardCallback(void* clientData)
+{
+	INSTANCE->simulateTimestep(INSTANCE->lastTimeStep);
+	cout << *(INSTANCE->getT()) << "\n\n";
+}
+
 void DiffusionSimulator::initUI(DrawingUtilitiesClass * DUC)
 {
 	this->DUC = DUC;
@@ -47,11 +102,17 @@ void DiffusionSimulator::initUI(DrawingUtilitiesClass * DUC)
 	DUC->g_camera.SetViewParams(XMLoadFloat3(&eye), XMLoadFloat3(&lookAt));
 
 	// Added by Rafa
-	TwAddVarRW(DUC->g_pTweakBar, "Grid Width", TW_TYPE_UINT16, &m_gridWidth, "min=0");
-	TwAddVarRW(DUC->g_pTweakBar, "Grid Height", TW_TYPE_UINT16, &m_gridHeight, "min=0");
+	// TwAddVarRW(DUC->g_pTweakBar, "Grid Width", TW_TYPE_UINT16, &m_gridWidth, "min=0");
+	// TwAddVarRW(DUC->g_pTweakBar, "Grid Height", TW_TYPE_UINT16, &m_gridHeight, "min=0");
 	TwAddVarRW(DUC->g_pTweakBar, "Particle Radius", TW_TYPE_UINT16, &m_sphereRadius, "min=1");
 	TwAddVarRW(DUC->g_pTweakBar, "Particle Spacing", TW_TYPE_UINT16, &m_sphereSpacing, "min=1");
 	TwAddVarRW(DUC->g_pTweakBar, "Alpha", TW_TYPE_FLOAT, &alpha, "min=0 step=0.05");
+	TwAddVarCB(DUC->g_pTweakBar, "Grid Width", TW_TYPE_UINT16, setGridWidthCallback, getGridWidthCallback, nullptr, "min=0");
+	TwAddVarCB(DUC->g_pTweakBar, "Grid Height", TW_TYPE_UINT16, setGridHeightCallback, getGridHeightCallback, nullptr, "min=0");
+	
+	// Stop the simulation and then check step by step in console
+	TwAddButton(DUC->g_pTweakBar, "Single Step", stepForwardCallback, nullptr, "");
+	
 	reset();
 }
 
@@ -192,10 +253,9 @@ void DiffusionSimulator::diffuseTemperatureImplicit(float timeStep) {//add your 
 	delete b;
 }
 
-
-
 void DiffusionSimulator::simulateTimestep(float timeStep)
 {
+	lastTimeStep = timeStep;
 	// to be implemented
 	// update current setup for each frame
 	switch (m_iTestCase)
@@ -206,7 +266,7 @@ void DiffusionSimulator::simulateTimestep(float timeStep)
 		break;
 	}
 	case 1:
-		diffuseTemperatureImplicit(timeStep * 15);
+		diffuseTemperatureImplicit(timeStep);
 		break;
 	}
 

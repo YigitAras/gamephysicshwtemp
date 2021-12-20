@@ -7,6 +7,7 @@
 #include <vector>
 #include "pcgsolver.h"
 
+
 class DiffusionSimulator:public Simulator{
 public:
 	// Construtors
@@ -27,8 +28,11 @@ public:
 	Grid* diffuseTemperatureExplicit(float timeStep);
 	void diffuseTemperatureImplicit(float timeStep);
 	int getGridWidth();
+	void setGridWidth(int width);
 	int getGridHeight();
+	void setGridHeight(int height);
 	Grid* getT();
+	float lastTimeStep; // Used for single step button
 
 	
 private:
@@ -57,5 +61,8 @@ private:
 	int m_sphereSpacing;
 	int m_tickCount;
 };
+
+// Dirty singleton workaround for passing member function as callbacks
+static DiffusionSimulator* INSTANCE;
 
 #endif
