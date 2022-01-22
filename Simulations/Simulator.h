@@ -40,7 +40,7 @@ public:
 	drawing functions in the DrawingUtilityClass
 	**for more info on what functions avaialble to use take a look at the DrawingUtilities Class
 	*/
-	virtual void drawFrame(ID3D11DeviceContext* pd3dImmediateContext, float emissiveMult, float specMult, float specPower, float diffMult) = 0;
+	virtual void drawFrame(ID3D11DeviceContext* pd3dImmediateContext) = 0;
 	/*
 	This Function is used to calculate  called by the simulator enviroment
 	input: fElapsedTime is the elapsed time since the last timestep
