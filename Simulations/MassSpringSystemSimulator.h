@@ -4,9 +4,34 @@
 
 // Do Not Change
 #define EULER 0
-#define LEAPFROG 1
-#define MIDPOINT 2
+#define MIDPOINT 1
+#define LEAPFROG 2
 // Do Not Change
+
+typedef struct MassPointStruct
+{
+	Vec3 pos;
+	Vec3 vel;
+	Vec3 accumForces;
+	float mass;
+	bool fixed;
+
+	// Midpoint aux members
+	Vec3 posTmp;
+	Vec3 velTmp;
+	Vec3 posBak;
+	Vec3 velBak;
+	Vec3 externalForceQueue; 
+
+} MassPoint;
+
+typedef struct SpringStruct
+{
+	unsigned int p1;
+	unsigned int p2; 
+	float initialLength;
+	float currentLength;
+} Spring;
 
 
 class MassSpringSystemSimulator:public Simulator{
@@ -54,5 +79,20 @@ private:
 	Point2D m_mouse;
 	Point2D m_trackmouse;
 	Point2D m_oldtrackmouse;
-};
+
+	// Added by rafa
+	bool m_firstStep;
+	std::vector<Spring> m_springs;
+	std::vector<MassPoint> m_massPoints;
+
+	bool m_gravityEnabled;
+	bool m_windEnabled;
+	bool m_groundEnabled;
+	bool m_showSprings;
+
+	void computeTotalForces();
+	void TwoMassSetup();
+	void ComplexSetup();
+	MassPoint* getMassPoint(unsigned int idx);
+}; 
 #endif
