@@ -5,7 +5,6 @@ using namespace std;
 
 DiffusionSimulator::DiffusionSimulator()
 {
-	m_iTestCase = 0;
 
 	m_gridWidth = 20;
 	m_gridHeight = 20;
@@ -30,11 +29,6 @@ void DiffusionSimulator::gridInitialSetup() {
 	T->setRegionTo(m_gridWidth - 4, m_gridHeight - 6, 3, 5, 300);
 	T->setRegionTo(1, m_gridHeight - 6, 5, 5, 700);
 	T->setBorderToInitial();
-}
-
-
-const char * DiffusionSimulator::getTestCasesStr(){
-	return "Explicit_solver, Implicit_solver";
 }
 
 void DiffusionSimulator::reset(){
@@ -118,11 +112,10 @@ void DiffusionSimulator::initUI(DrawingUtilitiesClass * DUC)
 
 void DiffusionSimulator::notifyCaseChanged(int testCase)
 {
-	m_iTestCase = testCase;
 	//
 	//to be implemented
 	//
-	switch (m_iTestCase)
+	switch (0)
 	{
 	case 0:
 		cout << "Explicit solver!\n";
@@ -258,7 +251,7 @@ void DiffusionSimulator::simulateTimestep(float timeStep)
 	lastTimeStep = timeStep;
 	// to be implemented
 	// update current setup for each frame
-	switch (m_iTestCase)
+	switch (0)
 	{
 	case 0:
 	{
@@ -304,9 +297,9 @@ void DiffusionSimulator::drawObjects(float emissiveMult, float specMult, float s
 }
 
 
-void DiffusionSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext, float emissiveMult, float specMult, float specPower, float diffMult)
+void DiffusionSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
 {
-	drawObjects(emissiveMult, specMult, specPower, diffMult);
+	//drawObjects(emissiveMult, specMult, specPower, diffMult);
 }
 
 void DiffusionSimulator::onClick(int x, int y)

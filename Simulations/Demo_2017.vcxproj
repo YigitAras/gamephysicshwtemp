@@ -224,24 +224,28 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CoupledSimulator.cpp" />
     <ClCompile Include="DiffusionSimulator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Grid.cpp" />
-    <ClCompile Include="SphereSystemSimulator.cpp" />
-    <ClCompile Include="TemplateSimulator.cpp" />
+    <ClCompile Include="MassSpringSystemSimulator.cpp" />
+    <ClCompile Include="ObstacleSceneBase.cpp" />
     <ClCompile Include="util\FFmpeg.cpp" />
     <ClCompile Include="util\util.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CoupledSimulator.h" />
     <ClInclude Include="DiffusionSimulator.h" />
     <ClInclude Include="DrawingUtilitiesClass.h" />
     <ClInclude Include="general.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="MassSpringSystemSimulator.h" />
+    <ClInclude Include="ObstacleScene\ExampleObstacleScene.h" />
+    <ClInclude Include="ObstacleScene\Obstacle.h" />
+    <ClInclude Include="ObstacleScene\ObstacleScene.h" />
     <ClInclude Include="pcgsolver.h" />
     <ClInclude Include="Simulator.h" />
-    <ClInclude Include="SphereSystemSimulator.h" />
-    <ClInclude Include="TemplateSimulator.h" />
+    <ClInclude Include="finalProjectUtils.h" />
     <ClInclude Include="util\FFmpeg.h" />
     <ClInclude Include="util\matrixbase.h" />
     <ClInclude Include="util\quaternion.h" />
@@ -249,6 +253,8 @@
     <ClInclude Include="util\util.h" />
     <ClInclude Include="util\vectorbase.h" />
     <ClInclude Include="vectorbase.h" />
+    <ClInclude Include="WindField\ExampleWindField.h" />
+    <ClInclude Include="WindField\WindField.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="effect.fx">

@@ -18,12 +18,8 @@ using namespace GamePhysics;
 
 class Simulator{
 public:
-	// Attributes
-	int m_iTestCase;
 	DrawingUtilitiesClass * DUC;
 	// Functions
-	
-	virtual const char * getTestCasesStr() = 0;
 
 	virtual void reset() = 0;
 	
@@ -40,7 +36,7 @@ public:
 	drawing functions in the DrawingUtilityClass
 	**for more info on what functions avaialble to use take a look at the DrawingUtilities Class
 	*/
-	virtual void drawFrame(ID3D11DeviceContext* pd3dImmediateContext, float emissiveMult, float specMult, float specPower, float diffMult) = 0;
+	virtual void drawFrame(ID3D11DeviceContext* pd3dImmediateContext) = 0;
 	/*
 	This Function is used to calculate  called by the simulator enviroment
 	input: fElapsedTime is the elapsed time since the last timestep
@@ -51,12 +47,6 @@ public:
 	input: timeStep is the time step of the stimulation
 	*/
 	virtual void simulateTimestep(float timeStep)= 0;
-	/*
-	This Function is used to notify the simulator that the scene test case is changed 
-	so that the needed changes can be handed here
-	**for more info on how to use this function take a look at the template simulator 
-	*/
-	virtual void notifyCaseChanged(int testCase) = 0;
 
 	/*
 	this function is used to receive the input from the mouse

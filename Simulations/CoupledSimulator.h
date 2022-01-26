@@ -1,5 +1,5 @@
-#ifndef DIFFUSIONSIMULATOR_h
-#define DIFFUSIONSIMULATOR_h
+#ifndef COUPLEDSIMULATOR_h
+#define COUPLEDSIMULATOR_h
 
 #include "Simulator.h"
 #include "vectorbase.h"
@@ -8,19 +8,29 @@
 #include "pcgsolver.h"
 
 
-class DiffusionSimulator:public Simulator{
+#include "DiffusionSimulator.h"
+#include "MassSpringSystemSimulator.h"
+#include "WindField/WindField.h"
+#include "ObstacleScene/ObstacleScene.h"
+
+
+
+class CoupledSimulator:public Simulator {
 public:
 	// Construtors
-	DiffusionSimulator();
+	CoupledSimulator();
 
-	void initUI(DrawingUtilitiesClass * DUC);
+	// Functions
+	void initUI(DrawingUtilitiesClass* DUC);
 	void reset();
 	void drawFrame(ID3D11DeviceContext* pd3dImmediateContext);
-	void notifyCaseChanged(int testCase);
 	void simulateTimestep(float timeStep);
 	void externalForcesCalculations(float timeElapsed) {};
 	void onClick(int x, int y);
 	void onMouse(int x, int y);
+
+
+	// Old
 	// Specific Functions
 	void drawObjects(float emissiveMult, float specMult, float specPower, float diffMult);
 	Grid* diffuseTemperatureExplicit(float timeStep);
@@ -32,7 +42,7 @@ public:
 	Grid* getT();
 	float lastTimeStep; // Used for single step button
 
-	
+
 private:
 	// Attributes
 	Vec3  m_vfMovableObjectPos;
@@ -41,26 +51,19 @@ private:
 	Point2D m_mouse;
 	Point2D m_trackmouse;
 	Point2D m_oldtrackmouse;
-	Grid *T; //save results of every time step
-	Grid *newT;
-	float alpha;
+	
+	vector<WindField*> m_windFields;
+	vector<ObstacleScene*> m_obstacleScenes;
+	DiffusionSimulator m_difussionSimulator;
+	MassSpringSystemSimulator m_massSpringSimulator;
 
-	float computeNewExplicitU(int x, int y, float timeStep);
+	void selectWindField(WindField* wf) { m_selectedWindField = wf; };
+	void selectObstacleScene(ObstacleScene* obsScene) { m_selectedObstacleScene = obsScene;  };
 
-	void gridInitialSetup();
-
-	void fillT(vector<Real>& x);
-	void setupB(vector<Real>& b);
-	void setupA(SparseMatrix<Real>& A, double factor);
-
-	int m_gridWidth;
-	int m_gridHeight;
-	int m_sphereRadius;
-	int m_sphereSpacing;
-	int m_tickCount;
+	bool m_drawWind;
+	bool m_windEnabled;
+	WindField* m_selectedWindField;
+	ObstacleScene* m_selectedObstacleScene;
 };
-
-// Dirty singleton workaround for passing member function as callbacks
-static DiffusionSimulator* INSTANCE;
 
 #endif
