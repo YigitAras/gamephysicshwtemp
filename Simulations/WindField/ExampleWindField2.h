@@ -1,11 +1,11 @@
 #include "WindField.h"
 
-class ExampleWindField: public WindField {
+class ExampleWindField2 : public WindField {
 public:
 
 	// Override this, set name and add obstacles
-	ExampleWindField() {
-		setWindFieldName("Example Wind");
+	ExampleWindField2() {
+		setWindFieldName("Example Wind2");
 		setIntensity(1.0);
 		setEnabled(true);
 	};

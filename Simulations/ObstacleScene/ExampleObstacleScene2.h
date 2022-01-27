@@ -1,11 +1,11 @@
 
 #include "ObstacleScene.h"
 
-class ExampleObstacleScene: public ObstacleScene {
+class ExampleObstacleScene2 : public ObstacleScene {
 public:
 
-	ExampleObstacleScene() {
-		setSceneName("Example Scene");
+	ExampleObstacleScene2() {
+		setSceneName("Example Scene2");
 		// addObstacle(...)
 	};
 

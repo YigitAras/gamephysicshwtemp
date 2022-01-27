@@ -25,6 +25,7 @@ public:
 	void drawObstacles(DrawingUtilitiesClass* DUC) { return;  };
 
 	// Use tweakbar to show a GUI where each obstacle temperature can be adjusted.
+	// Implement here
 	void initUI(DrawingUtilitiesClass* DUC) { return; };
 
 	string getSceneName() { return m_sceneName; };
@@ -45,11 +46,11 @@ public:
 	// otherwise, return currTemp
 	float getTemperatureAtPoint(Vec3 point, float currTemp) { return 0.0;  };
 	
-private:
+protected:
 
 	string m_sceneName;
+	vector<Obstacle> m_obstacles;
 	// Call this on contructor of subclass. Name will appear in the coupledSimulator list
 	void setSceneName(string name) { m_sceneName = name; }; 
-	void addObstacle(Obstacle obs);
-	vector<Obstacle> m_obstacles;
+	void addObstacle(Obstacle obs) { m_obstacles.push_back(obs); };
 };

@@ -1,6 +1,7 @@
 #ifndef MASSSPRINGSYSTEMSIMULATOR_h
 #define MASSSPRINGSYSTEMSIMULATOR_h
 #include "Simulator.h"
+#include "SimulationState.h"
 #include "WindField/WindField.h"
 #include "ObstacleScene/ObstacleScene.h"
 
@@ -40,6 +41,7 @@ class MassSpringSystemSimulator:public Simulator{
 public:
 	// Construtors
 	MassSpringSystemSimulator();
+	MassSpringSystemSimulator(SimulationState* state);
 	
 	void initUI(DrawingUtilitiesClass * DUC);
 	void reset();
@@ -68,7 +70,6 @@ public:
 		m_iIntegrator = integrator;
 	}
 
-	void setWindFieldEnabled(bool status) { m_windEnabled = status; };
 	void setWindField(WindField* windField) { m_windField = windField;  };
 	void setObstacleScene(ObstacleScene* obstacleScene) { m_obstacleScene = obstacleScene; };
 
@@ -87,7 +88,7 @@ private:
 
 	// Added by rafa
 
-	bool m_firstStep;
+	SimulationState* m_simulationState;
 
 	WindField* m_windField;
 	ObstacleScene* m_obstacleScene;

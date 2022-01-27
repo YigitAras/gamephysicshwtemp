@@ -3,11 +3,9 @@
 
 #include "Simulator.h"
 #include "vectorbase.h"
-#include "Grid.h"
 #include <vector>
-#include "pcgsolver.h"
 
-
+#include "SimulationState.h"
 #include "DiffusionSimulator.h"
 #include "MassSpringSystemSimulator.h"
 #include "WindField/WindField.h"
@@ -29,19 +27,17 @@ public:
 	void onClick(int x, int y);
 	void onMouse(int x, int y);
 
+	int getCurrentSceneIndex();
+	void setCurrentSceneFromIndex(int idx);
 
-	// Old
-	// Specific Functions
-	void drawObjects(float emissiveMult, float specMult, float specPower, float diffMult);
-	Grid* diffuseTemperatureExplicit(float timeStep);
-	void diffuseTemperatureImplicit(float timeStep);
-	int getGridWidth();
-	void setGridWidth(int width);
-	int getGridHeight();
-	void setGridHeight(int height);
-	Grid* getT();
-	float lastTimeStep; // Used for single step button
+	int getCurrentWindFieldIndex();
+	void setCurrentWindFieldFromIndex(int idx);
 
+	// publicly privated: These should be private but otherwise i cant reference them easily on callbacks
+	WindField* m_selectedWindField;
+	ObstacleScene* m_selectedObstacleScene;
+	vector<WindField*> m_windFields;
+	vector<ObstacleScene*> m_obstacleScenes;
 
 private:
 	// Attributes
@@ -52,18 +48,23 @@ private:
 	Point2D m_trackmouse;
 	Point2D m_oldtrackmouse;
 	
-	vector<WindField*> m_windFields;
-	vector<ObstacleScene*> m_obstacleScenes;
-	DiffusionSimulator m_difussionSimulator;
+
+	// Store the current state of the cloth and its temperature
+	SimulationState* m_simulationState;
+
+	// Update position of cloth
 	MassSpringSystemSimulator m_massSpringSimulator;
+
+	// Update temperature of cloth
+	DiffusionSimulator m_difussionSimulator;
 
 	void selectWindField(WindField* wf) { m_selectedWindField = wf; };
 	void selectObstacleScene(ObstacleScene* obsScene) { m_selectedObstacleScene = obsScene;  };
 
 	bool m_drawWind;
-	bool m_windEnabled;
-	WindField* m_selectedWindField;
-	ObstacleScene* m_selectedObstacleScene;
 };
+
+// Dirty singleton workaround for passing member function as callbacks
+static CoupledSimulator* INSTANCE;
 
 #endif

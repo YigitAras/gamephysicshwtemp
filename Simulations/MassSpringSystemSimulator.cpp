@@ -2,29 +2,23 @@
 #include "MassSpringSystemSimulator.h"
 #include "finalProjectUtils.h"
 	
-Vec3 windField(Vec3 pos, float timeElapsed)
-{
-	float modulus = 40;
-	// Wind on the X axis
-	return modulus * getNormalized(Vec3(0, 0, cos(timeElapsed) + pos.z));
-}
 
-MassSpringSystemSimulator::MassSpringSystemSimulator()
+MassSpringSystemSimulator::MassSpringSystemSimulator() {};
+
+MassSpringSystemSimulator::MassSpringSystemSimulator(SimulationState* state)
 {
-	m_gravityEnabled = false;
-	m_groundEnabled = false;
-	m_showSprings = true;
-	m_firstStep = true;
-	setIntegrator(EULER);
+	m_gravityEnabled = true;
+	m_simulationState = state;
+	setIntegrator(MIDPOINT);
 }
 
 void MassSpringSystemSimulator::initUI(DrawingUtilitiesClass* DUC)
 {
 	TwType TW_TYPE_TESTCASE = TwDefineEnumFromString("Integrator", "Euler,Midpoint");
 	this->DUC = DUC;
-	TwAddVarRW(DUC->g_pTweakBar, "Show Springs", TW_TYPE_BOOLCPP, &m_showSprings, "");
 	TwAddVarRW(DUC->g_pTweakBar, "Integrator", TW_TYPE_TESTCASE, &m_iIntegrator, "");
 	TwAddVarRW(DUC->g_pTweakBar, "Enable Gravity", TW_TYPE_BOOLCPP, &m_gravityEnabled, "");
+	// TODO: Add GUI entries for configuring the Stiffness of springs, mass and damping
 }
 
 void MassSpringSystemSimulator::reset()
@@ -36,7 +30,7 @@ void MassSpringSystemSimulator::reset()
 
 void MassSpringSystemSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
 {
-	//if (m_groundEnabled) DUC->DrawFloor(pd3dImmediateContext);
+	// Move all this in Coupled Simulator
 
 	//float sphereScale = 1.0 / 15.0;
 	//for (auto& mp : m_massPoints)
@@ -54,55 +48,15 @@ void MassSpringSystemSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateCont
 	//}
 }
 
-//void MassSpringSystemSimulator::notifyCaseChanged(int testCase)
-//{	
-//	switch (0)
-//	{
-//	case 0:
-//		m_firstStep = true;
-//		m_gravityEnabled = false;
-//		m_groundEnabled = false;
-//		m_showSprings = true;
-//		m_windEnabled = false;
-//		TwoMassSetup();
-//		break;
-//
-//	case 1:
-//		m_gravityEnabled = false;
-//		m_groundEnabled = false;
-//		m_showSprings = true;
-//		m_windEnabled = false;
-//		setIntegrator(EULER);
-//		TwoMassSetup();
-//		break;
-//	case 2:
-//		m_gravityEnabled = false;
-//		m_groundEnabled = false;
-//		m_showSprings = true;
-//		m_windEnabled = false;
-//		setIntegrator(MIDPOINT);
-//		TwoMassSetup();
-//		break;
-//	case 3:
-//		cout << "Demo4\n";
-//		m_gravityEnabled = true;
-//		m_groundEnabled = true;
-//		m_windEnabled = false;
-//		setIntegrator(MIDPOINT);
-//		ComplexSetup();
-//		break;
-//	default:
-//		cout << "Empty Test!\n";
-//		break;
-//	}
-// }
+
 void MassSpringSystemSimulator::externalForcesCalculations(float timeElapsed)
 {
-	if (!m_windEnabled) return;
-	for (auto& mp : m_massPoints)
-	{
-		mp.externalForceQueue = windField(mp.pos, timeElapsed);
-	}
+
+	//if (!m_windEnabled) return;
+	//for (auto& mp : m_massPoints)
+	//{
+	//	// mp.externalForceQueue = windField(mp.pos, timeElapsed);
+	//}
 }
 
 void MassSpringSystemSimulator::computeTotalForces() 
@@ -110,7 +64,10 @@ void MassSpringSystemSimulator::computeTotalForces()
 	for (auto& mp : m_massPoints) {
 		// Clear Forces
 		mp.accumForces = Vec3(0.0f, 0.0f, 0.0f);
-		if (m_windEnabled) mp.accumForces += mp.externalForceQueue;
+
+		// TODO: check if m_windfield is ennabled and add the force
+
+		// if (m_windEnabled) mp.accumForces += mp.externalForceQueue;
 		// Add External forces
 		if (m_gravityEnabled) mp.accumForces += Vec3(0, -9.81 * mp.mass, 0);
 		mp.accumForces += -m_fDamping * mp.vel;
@@ -183,16 +140,6 @@ void MassSpringSystemSimulator::simulateTimestep(float timeStep)
 
 	default:
 		break;
-	}
-
-	if (m_firstStep) {
-		m_firstStep = false;
-		cout << "[State after step of h=" << timeStep << "]" << endl;
-		for (int i = 0; i < m_massPoints.size(); i++)
-		{
-			MassPoint mp = m_massPoints[i];
-			cout << "MP " << i << ": " << "Pos: " << mp.pos << ", Vel" << mp.vel << endl;
-		}
 	}
 }
 

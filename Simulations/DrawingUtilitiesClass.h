@@ -220,7 +220,7 @@ void DrawFloor(ID3D11DeviceContext* pd3dImmediateContext)
     // Draw 4*n*n quads spanning x = [-n;n], y = -1, z = [-n;n]
     const float n = 4;
     XMVECTOR normal      = XMVectorSet(0, 1,0,0);
-    XMVECTOR planecenter = XMVectorSet(0,-1,0,0);
+    XMVECTOR planecenter = XMVectorSet(0,0,0,0);
 
     g_pPrimitiveBatchPositionNormalColor->Begin();
     for (float z = -n; z < n; z++)
@@ -228,10 +228,10 @@ void DrawFloor(ID3D11DeviceContext* pd3dImmediateContext)
         for (float x = -n; x < n; x++)
         {
             // Quad vertex positions
-            XMVECTOR pos[] = { XMVectorSet(x  , -1, z+1, 0),
-                               XMVectorSet(x+1, -1, z+1, 0),
-                               XMVectorSet(x+1, -1, z  , 0),
-                               XMVectorSet(x  , -1, z  , 0) };
+            XMVECTOR pos[] = { XMVectorSet(x  , 0, z+1, 0),
+                               XMVectorSet(x+1, 0, z+1, 0),
+                               XMVectorSet(x+1, 0, z  , 0),
+                               XMVectorSet(x  , 0, z  , 0) };
 
             // Color checkerboard pattern (white & gray)
             XMVECTOR color = ((int(z + x) % 2) == 0) ? XMVectorSet(1,1,1,1) : XMVectorSet(0.6f,0.6f,0.6f,1);

@@ -6,32 +6,28 @@
 #include "Grid.h"
 #include <vector>
 #include "pcgsolver.h"
+#include "SimulationState.h"
+
+#define EXPLICIT_SOLVER 0
+#define IMPLICIT_SOLVER 1
 
 
 class DiffusionSimulator:public Simulator{
 public:
 	// Construtors
-	DiffusionSimulator();
+	DiffusionSimulator(); 
+	DiffusionSimulator(SimulationState* state);
 
 	void initUI(DrawingUtilitiesClass * DUC);
 	void reset();
 	void drawFrame(ID3D11DeviceContext* pd3dImmediateContext);
-	void notifyCaseChanged(int testCase);
 	void simulateTimestep(float timeStep);
 	void externalForcesCalculations(float timeElapsed) {};
 	void onClick(int x, int y);
 	void onMouse(int x, int y);
 	// Specific Functions
-	void drawObjects(float emissiveMult, float specMult, float specPower, float diffMult);
 	Grid* diffuseTemperatureExplicit(float timeStep);
 	void diffuseTemperatureImplicit(float timeStep);
-	int getGridWidth();
-	void setGridWidth(int width);
-	int getGridHeight();
-	void setGridHeight(int height);
-	Grid* getT();
-	float lastTimeStep; // Used for single step button
-
 	
 private:
 	// Attributes
@@ -47,20 +43,16 @@ private:
 
 	float computeNewExplicitU(int x, int y, float timeStep);
 
-	void gridInitialSetup();
 
 	void fillT(vector<Real>& x);
 	void setupB(vector<Real>& b);
 	void setupA(SparseMatrix<Real>& A, double factor);
 
-	int m_gridWidth;
-	int m_gridHeight;
 	int m_sphereRadius;
 	int m_sphereSpacing;
 	int m_tickCount;
+	int m_selectedSolver;
+	SimulationState* m_simulationState;
 };
-
-// Dirty singleton workaround for passing member function as callbacks
-static DiffusionSimulator* INSTANCE;
 
 #endif

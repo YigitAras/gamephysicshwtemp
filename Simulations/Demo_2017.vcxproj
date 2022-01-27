@@ -230,6 +230,7 @@
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="MassSpringSystemSimulator.cpp" />
     <ClCompile Include="ObstacleSceneBase.cpp" />
+    <ClCompile Include="SimulationState.cpp" />
     <ClCompile Include="util\FFmpeg.cpp" />
     <ClCompile Include="util\util.cpp" />
   </ItemGroup>
@@ -241,8 +242,10 @@
     <ClInclude Include="Grid.h" />
     <ClInclude Include="MassSpringSystemSimulator.h" />
     <ClInclude Include="ObstacleScene\ExampleObstacleScene.h" />
+    <ClInclude Include="ObstacleScene\ExampleObstacleScene2.h" />
     <ClInclude Include="ObstacleScene\Obstacle.h" />
     <ClInclude Include="ObstacleScene\ObstacleScene.h" />
+    <ClInclude Include="SimulationState.h" />
     <ClInclude Include="pcgsolver.h" />
     <ClInclude Include="Simulator.h" />
     <ClInclude Include="finalProjectUtils.h" />
@@ -254,6 +257,7 @@
     <ClInclude Include="util\vectorbase.h" />
     <ClInclude Include="vectorbase.h" />
     <ClInclude Include="WindField\ExampleWindField.h" />
+    <ClInclude Include="WindField\ExampleWindField2.h" />
     <ClInclude Include="WindField\WindField.h" />
   </ItemGroup>
   <ItemGroup>
