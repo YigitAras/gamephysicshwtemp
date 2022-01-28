@@ -17,3 +17,10 @@ public:
 private:
 	// Define whatever is necessary, center, temperature, et.
 };
+
+class SphereObstacle : public Obstacle {
+
+
+
+
+};
