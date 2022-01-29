@@ -22,11 +22,18 @@ public:
 	// in constructor, set name and add obstacles
 
 	// Draw every contained obstacle and color each one according to their temperature
-	void drawObstacles(DrawingUtilitiesClass* DUC) { return;  };
+	void drawObstacles(DrawingUtilitiesClass* DUC) { 
+		for (int i = 0; i < m_obstacles.size(); i++)
+			m_obstacles[i].drawObstacle(DUC);
+	};
 
 	// Use tweakbar to show a GUI where each obstacle temperature can be adjusted.
 	// Implement here
-	void initUI(DrawingUtilitiesClass* DUC) { return; };
+	void initUI(DrawingUtilitiesClass* DUC) { 
+		for (int i = 0; i < m_obstacles.size(); i++)
+			m_obstacles[i].initUI(DUC);
+	
+	};
 
 	string getSceneName() { return m_sceneName; };
 
@@ -40,11 +47,34 @@ public:
 
 	// If inside of a shape perform the projection explained earlier. This way the cloth wont enter the shapes
 	
-	Vec3 clipToSurface(Vec3 inputPoint) { return Vec3(0, 0, 0); };
+	Vec3 clipToSurface(Vec3 inputPoint) { 
+		for (int i = 0; i < m_obstacles.size(); i++) {
+			bool isinside = false;
+			Vec3 new_point = m_obstacles[i].isInsideorSurface(inputPoint, &isinside);
+			if (isinside) {
+				return new_point;
+			}
+
+
+		} 
+		return inputPoint;
+	};
 	
 	// if point is in surface or inside an obstacle, return the obstacle temperture.
 	// otherwise, return currTemp
-	float getTemperatureAtPoint(Vec3 point, float currTemp) { return 0.0;  };
+	float getTemperatureAtPoint(Vec3 point, float currTemp) { 
+		for (int i = 0; i < m_obstacles.size(); i++) {
+			bool isinside = false;
+			Vec3 new_point = m_obstacles[i].isInsideorSurface(point, &isinside);
+			if (isinside) {
+				return m_obstacles[i].getTemp();
+			}
+
+
+		}
+		return currTemp;
+	
+	};
 	
 protected:
 
@@ -53,4 +83,55 @@ protected:
 	// Call this on contructor of subclass. Name will appear in the coupledSimulator list
 	void setSceneName(string name) { m_sceneName = name; }; 
 	void addObstacle(Obstacle obs) { m_obstacles.push_back(obs); };
+};
+
+
+
+
+class ObstacleScene1 : public ObstacleScene {
+public:
+
+
+	// in constructor, set name and add obstacles
+	ObstacleScene1() {
+		setSceneName("ObstacleScene 1");
+		
+	}
+
+
+};
+
+
+class ObstacleScene2 : public ObstacleScene {
+public:
+	ObstacleScene2() {
+		setSceneName("ObstacleScene 1");
+	}
+
+};
+
+
+class ObstacleScene3 : public ObstacleScene {
+public:
+	ObstacleScene3() {
+		setSceneName("ObstacleScene 1");
+	}
+
+};
+
+
+class ObstacleScene4 : public ObstacleScene {
+public:
+	ObstacleScene4() {
+		setSceneName("ObstacleScene 1");
+	}
+
+};
+
+class ObstacleScene5 : public ObstacleScene {
+public:
+	ObstacleScene5() {
+		setSceneName("ObstacleScene 1");
+	}
+
 };
