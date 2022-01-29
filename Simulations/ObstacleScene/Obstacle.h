@@ -16,7 +16,7 @@ public:
 	virtual Vec3 isInsideorSurface(Vec3 position, bool* isinside){ return Vec3(0, 0, 0); }
 	float getTemp() { return m_temp; }
 	void initUI(DrawingUtilitiesClass* DUC){
-		string tmp = name + "temperature";
+		string tmp = name + " Temperature";
 		TwAddVarRW(DUC->g_pTweakBar, tmp.c_str(), TW_TYPE_FLOAT, &m_temp, "");
 	}
 private:
