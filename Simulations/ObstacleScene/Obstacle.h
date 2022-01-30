@@ -55,7 +55,7 @@ public:
 					return position;
 
 				tmp *= m_sphereRadius / dis;
-				return tmp;
+				return (tmp+m_sphereCenter);
 
 			}
 		}
@@ -181,6 +181,7 @@ public:
 					}
 					Vec3 tmp(position[0] - m_position_center[0], 0, position[2] - m_position_center[2]);
 					tmp *= (m_diag / 2) / d;
+					tmp += m_basePosition;
 					return Vec3(tmp[0], position[1], tmp[2]);
 				}
 			}
@@ -239,6 +240,7 @@ public:
 		m_basePosition = base_position;
 		m_position_center = Vec3(m_basePosition[0], m_basePosition[1] + 0.5 * height, m_basePosition[2]);
 		name = "Cone";
+		angle = atanf(m_rad/height);
 	}
 
 	Vec3 isInsideorSurface(Vec3 position, bool* isinside) {
@@ -257,6 +259,7 @@ public:
 					}
 					Vec3 tmp(position[0] - m_position_center[0], 0, position[2] - m_position_center[2]);
 					tmp *= (current_rad) / d;
+					tmp += m_basePosition;
 					return Vec3(tmp[0], position[1], tmp[2]);
 				}
 			}
