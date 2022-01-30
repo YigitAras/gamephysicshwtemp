@@ -19,6 +19,10 @@ public:
 		string tmp = name + " Temperature";
 		TwAddVarRW(DUC->g_pTweakBar, tmp.c_str(), TW_TYPE_FLOAT, &m_temp, "");
 	}
+	void initUI(DrawingUtilitiesClass* DUC, int i) {
+		string tmp = to_string(i) + ": " +name  +" Temperature";
+		TwAddVarRW(DUC->g_pTweakBar, tmp.c_str(), TW_TYPE_FLOAT, &m_temp, "");
+	}
 private:
 	// Define whatever is necessary, center, temperature, etc.
 protected:

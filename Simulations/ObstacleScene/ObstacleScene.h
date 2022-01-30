@@ -32,7 +32,7 @@ public:
 	// Implement here
 	void initUI(DrawingUtilitiesClass* DUC) { 
 		for (int i = 0; i < m_obstacles.size(); i++)
-			m_obstacles[i]->initUI(DUC);
+			m_obstacles[i]->initUI(DUC,i);
 	
 	};
 
