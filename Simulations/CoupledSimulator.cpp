@@ -125,6 +125,17 @@ CoupledSimulator::CoupledSimulator()
 	m_obstacleScenes.push_back(os2);
 	selectObstacleScene(os1);
 
+
+	m_gridWidth = 20;
+	m_gridHeight = 20;
+	m_sphereRadius = 10;
+	m_sphereSpacing = 8;
+	alpha = 20;
+	T = new Grid(m_gridWidth, m_gridHeight, 0);
+	newT = new Grid(m_gridWidth, m_gridHeight, 0);
+	gridInitialSetup();
+
+
 	// We save the pointer for callback reference
 	INSTANCE = this;
 
@@ -191,8 +202,12 @@ void CoupledSimulator::simulateTimestep(float timeStep)
 	m_difussionSimulator.simulateTimestep(timeStep);
 }
 
+Vec3 colorFunc(float x) {
+	float y = pow(x, 2);
+	return Vec3(y, 0, 1 - y);
+}
 
-void CoupledSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
+void CoupledSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContextt)
 {
 	// This will be the only simulator that draws. The other two subsimulator will just compute a new state
 
@@ -202,6 +217,28 @@ void CoupledSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
 	m_selectedObstacleScene->drawObstacles(DUC);
 	
 	// TODO: Draw the cloth with respective colors! See branch Rafael1
+
+	float sphereScale = m_sphereRadius / 100.0;
+	float spaceScale = m_sphereSpacing / 50.0;
+	float value;
+
+
+	for (int y = 0; y < m_gridHeight; y++)
+	{
+		for (int x = 0; x < m_gridWidth; x++)
+		{
+
+			float input = T->get(x, y) / 10.0;
+			// float input = x / (m_gridWidth - 1.0);
+			DUC->setUpLighting(colorFunc(input), specMult * Vec3(1, 1, 1), specPower, diffMult * 0.05 * Vec3(1, 1, 1));
+			DUC->drawSphere(Vec3(-1 * spaceScale * m_gridWidth / 2.0, -1 * spaceScale * m_gridHeight / 2.0, 0) + Vec3(x * spaceScale, y * spaceScale, 0), Vec3(sphereScale, sphereScale, sphereScale));
+		}
+	}
+
+}
+
+void CoupledSimulator::externalForcesCalculations(float timeElapsed)
+{
 }
 
 

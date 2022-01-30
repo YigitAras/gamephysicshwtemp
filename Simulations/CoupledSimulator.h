@@ -22,8 +22,9 @@ public:
 	void initUI(DrawingUtilitiesClass* DUC);
 	void reset();
 	void drawFrame(ID3D11DeviceContext* pd3dImmediateContext);
+	void externalForcesCalculations(float timeElapsed);
 	void simulateTimestep(float timeStep);
-	void externalForcesCalculations(float timeElapsed) {};
+	
 	void onClick(int x, int y);
 	void onMouse(int x, int y);
 
@@ -47,6 +48,23 @@ private:
 	Point2D m_mouse;
 	Point2D m_trackmouse;
 	Point2D m_oldtrackmouse;
+
+	Grid* T; //save results of every time step
+	Grid* newT;
+	float alpha;
+
+	int m_gridWidth;
+	int m_gridHeight;
+	int m_sphereRadius;
+	int m_sphereSpacing;
+	int m_tickCount;
+
+	void gridInitialSetup();
+
+	float emissiveMult = 1;
+	float specMult = 5;
+	float specPower = 70;
+	float diffMult = 0.3;
 	
 
 	// Store the current state of the cloth and its temperature
