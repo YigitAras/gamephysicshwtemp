@@ -2,7 +2,7 @@
 
 #include "../util/vectorbase.h"
 #include "../DrawingUtilitiesClass.h"
-
+#include "../finalProjectUtils.h"
 using namespace std;
 using namespace GamePhysics;
 
@@ -44,7 +44,7 @@ public:
 		name = "Sphere";
 	}
 	void drawObstacle(DrawingUtilitiesClass* DUC) override {
-		
+		setUpLightingColor(DUC, m_temp);
 		DUC->drawSphere(m_sphereCenter, Vec3(m_sphereRadius, m_sphereRadius, m_sphereRadius));
 	}
 
@@ -89,6 +89,7 @@ protected:
 class BoxObstacle : public Obstacle {
 public:
 	void drawObstacle(DrawingUtilitiesClass* DUC) {
+		setUpLightingColor(DUC, m_temp);
 		Mat4f a;
 		a.initScaling(m_dim[0], m_dim[1], m_dim[2]);
 		const XMMATRIX Scale = a.toDirectXMatrix();
@@ -156,7 +157,9 @@ public:
 		const XMMATRIX Rotation = Quat{ 0,0,0,1 }.getRotMat().toDirectXMatrix();
 		const XMMATRIX Translation = a.toDirectXMatrix();
 		const XMMATRIX ObjToWorld = Scale * Rotation * Translation;
+		setUpLightingColor(DUC, m_temp);
 		DUC->g_pEffectPositionNormal->SetWorld(ObjToWorld * DUC->g_camera.GetWorldMatrix());
+		
 		cylinder->Draw(DUC->g_pEffectPositionNormal,DUC->g_pInputLayoutPositionNormal);
 	}
 
@@ -232,6 +235,7 @@ public:
 		const XMMATRIX Rotation = Quat{ 0,0,0,1 }.getRotMat().toDirectXMatrix();
 		const XMMATRIX Translation = a.toDirectXMatrix();
 		const XMMATRIX ObjToWorld = Scale * Rotation * Translation;
+		setUpLightingColor(DUC, m_temp);
 		DUC->g_pEffectPositionNormal->SetWorld(ObjToWorld * DUC->g_camera.GetWorldMatrix());
 		cone->Draw(DUC->g_pEffectPositionNormal, DUC->g_pInputLayoutPositionNormal);
 	}
