@@ -5,36 +5,14 @@
 #include "WindField/WindField.h"
 #include "ObstacleScene/ObstacleScene.h"
 
+using namespace std;
+
 // Do Not Change
 #define EULER 0
 #define MIDPOINT 1
 #define LEAPFROG 2
 // Do Not Change
 
-typedef struct MassPointStruct
-{
-	Vec3 pos;
-	Vec3 vel;
-	Vec3 accumForces;
-	float mass;
-	bool fixed;
-
-	// Midpoint aux members
-	Vec3 posTmp;
-	Vec3 velTmp;
-	Vec3 posBak;
-	Vec3 velBak;
-	Vec3 externalForceQueue; 
-
-} MassPoint;
-
-typedef struct SpringStruct
-{
-	unsigned int p1;
-	unsigned int p2; 
-	float initialLength;
-	float currentLength;
-} Spring;
 
 
 class MassSpringSystemSimulator:public Simulator{
@@ -57,12 +35,7 @@ public:
 	void setMass(float mass) ;
 	void setStiffness(float stiffness) ;
 	void setDampingFactor(float damping) ;
-	int addMassPoint(Vec3 position, Vec3 Velocity, bool isFixed);
-	void addSpring(int masspoint1, int masspoint2, float initialLength) ;
-	int getNumberOfMassPoints();
-	int getNumberOfSprings();
-	Vec3 getPositionOfMassPoint(int index);
-	Vec3 getVelocityOfMassPoint(int index);
+	
 	void applyExternalForce(Vec3 force) ;
 	
 	// Do Not Change
@@ -92,18 +65,9 @@ private:
 
 	WindField* m_windField;
 	ObstacleScene* m_obstacleScene;
-	
-	std::vector<Spring> m_springs;
-	std::vector<MassPoint> m_massPoints;
 
 	bool m_gravityEnabled;
-	bool m_windEnabled;
-	bool m_groundEnabled;
-	bool m_showSprings;
 
 	void computeTotalForces();
-	void TwoMassSetup();
-	void ComplexSetup();
-	MassPoint* getMassPoint(unsigned int idx);
 }; 
 #endif

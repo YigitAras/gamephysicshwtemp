@@ -61,6 +61,7 @@ private:
 	void selectWindField(WindField* wf) { m_selectedWindField = wf; };
 	void selectObstacleScene(ObstacleScene* obsScene) { m_selectedObstacleScene = obsScene;  };
 
+	void drawMassSpringSystem();
 	bool m_drawWind;
 };
 

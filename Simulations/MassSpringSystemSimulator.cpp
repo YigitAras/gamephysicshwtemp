@@ -1,7 +1,7 @@
 
 #include "MassSpringSystemSimulator.h"
 #include "finalProjectUtils.h"
-	
+
 
 MassSpringSystemSimulator::MassSpringSystemSimulator() {};
 
@@ -23,67 +23,42 @@ void MassSpringSystemSimulator::initUI(DrawingUtilitiesClass* DUC)
 
 void MassSpringSystemSimulator::reset()
 {
-	cout << "Called Reset" << endl;
-	m_springs.clear();
-	m_massPoints.clear();
 }
 
-void MassSpringSystemSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
-{
-	// Move all this in Coupled Simulator
+void MassSpringSystemSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext){}
 
-	//float sphereScale = 1.0 / 15.0;
-	//for (auto& mp : m_massPoints)
-	//{
-	//	DUC->drawSphere(mp.pos, Vec3(sphereScale, sphereScale, sphereScale));
+void MassSpringSystemSimulator::externalForcesCalculations(float timeElapsed){}
+
+void MassSpringSystemSimulator::computeTotalForces()
+{
+	//for (auto& mp : m_simulationState->m_massPoints) {
+
+	//	// Clear Forces
+	//	mp.accumForces = Vec3(0.0f, 0.0f, 0.0f);
+
+	//	// TODO: check if m_windfield is ennabled and add the force
+
+	//	// if (m_windEnabled) mp.accumForces += mp.externalForceQueue;
+	//	// Add External force
+	//	if (!m_windField->isEnabled()) {
+	//		mp.externalForceQueue = m_windField->getForceAtPointTime(mp.pos, 0.0);
+	//	}
+
+	//	if (m_gravityEnabled) mp.accumForces += Vec3(0, -9.81 * m_fMass, 0);
+	//	mp.accumForces += -m_fDamping * mp.vel;
 	//}
 
-	//if (!m_showSprings) return;
-	//Vec3 lineColor = Vec3(0, 1, 0);
-	//for (auto& sp : m_springs)
-	//{
-	//	DUC->beginLine();
-	//	DUC->drawLine(getMassPoint(sp.p1)->pos, lineColor, getMassPoint(sp.p2)->pos, lineColor);
-	//	DUC->endLine();
+	//for (auto& sp : m_simulationState->m_springs) {
+	//	MassPoint* mp1 = m_simulationState->getMassPoint(sp.p1);
+	//	MassPoint* mp2 = m_simulationState->getMassPoint(sp.p2);
+	//	sp.currentLength = computeDistance(mp1->pos, mp2->pos);
+	//	Vec3 dir = mp1->pos - mp2->pos;
+	//	// Hookes law
+	//	Vec3 force = -m_fStiffness * (sp.currentLength - sp.initialLength) * dir / sp.currentLength;
+	//	// Apply to both ends
+	//	mp1->accumForces += force;
+	//	mp2->accumForces += -force;
 	//}
-}
-
-
-void MassSpringSystemSimulator::externalForcesCalculations(float timeElapsed)
-{
-
-	//if (!m_windEnabled) return;
-	//for (auto& mp : m_massPoints)
-	//{
-	//	// mp.externalForceQueue = windField(mp.pos, timeElapsed);
-	//}
-}
-
-void MassSpringSystemSimulator::computeTotalForces() 
-{
-	for (auto& mp : m_massPoints) {
-		// Clear Forces
-		mp.accumForces = Vec3(0.0f, 0.0f, 0.0f);
-
-		// TODO: check if m_windfield is ennabled and add the force
-
-		// if (m_windEnabled) mp.accumForces += mp.externalForceQueue;
-		// Add External forces
-		if (m_gravityEnabled) mp.accumForces += Vec3(0, -9.81 * mp.mass, 0);
-		mp.accumForces += -m_fDamping * mp.vel;
-	}
-
-	for (auto& sp : m_springs) {
-		MassPoint* mp1 = getMassPoint(sp.p1);
-		MassPoint* mp2 = getMassPoint(sp.p2);
-		sp.currentLength = computeDistance(mp1->pos, mp2->pos);
-		Vec3 dir = mp1->pos - mp2->pos;
-		// Hookes law
-		Vec3 force = -m_fStiffness * (sp.currentLength - sp.initialLength) * dir / sp.currentLength;
-		// Apply to both ends
-		mp1->accumForces += force;
-		mp2->accumForces += -force;
-	}
 }
 
 
@@ -95,27 +70,27 @@ void MassSpringSystemSimulator::simulateTimestep(float timeStep)
 	case EULER:
 		computeTotalForces();
 
-		for (auto& mp : m_massPoints) {
+		for (auto& mp : m_simulationState->m_massPoints) {
 			if (mp.fixed) continue;
 			mp.pos += timeStep * mp.vel;
-			if (m_groundEnabled && mp.pos.y < 0) mp.pos.y = -mp.pos.y;
-			mp.vel += timeStep * mp.accumForces / mp.mass;
+			if (mp.pos.y < 0) mp.pos.y = -mp.pos.y;
+			mp.vel += timeStep * mp.accumForces / m_fMass;
 		}
 
 		break;
 
 	case MIDPOINT:
 
-		for (auto& mp : m_massPoints) {
+		for (auto& mp : m_simulationState->m_massPoints) {
 			if (mp.fixed) continue;
 			mp.posTmp = mp.pos + timeStep / 2.0 * mp.vel;
 		}
 		computeTotalForces();
 
-		for (auto& mp : m_massPoints) {
+		for (auto& mp : m_simulationState->m_massPoints) {
 			if (mp.fixed) continue;
 
-			mp.velTmp = mp.vel + timeStep / 2.0 * mp.accumForces / mp.mass;
+			mp.velTmp = mp.vel + timeStep / 2.0 * mp.accumForces / m_fMass;
 			// Actually x(t + h)
 			mp.posBak = mp.pos + timeStep * mp.velTmp;
 
@@ -126,16 +101,13 @@ void MassSpringSystemSimulator::simulateTimestep(float timeStep)
 
 		computeTotalForces();
 
-		for (auto& mp : m_massPoints) {
+		for (auto& mp : m_simulationState->m_massPoints) {
 			if (mp.fixed) continue;
-			mp.vel = mp.velBak + timeStep * mp.accumForces / mp.mass;
+			mp.vel = mp.velBak + timeStep * mp.accumForces / m_fMass;
 			mp.pos = mp.posBak;
-			if (m_groundEnabled && mp.pos.y < 0) mp.pos.y = -mp.pos.y;
+			if (mp.pos.y < 0) mp.pos.y = -mp.pos.y;
 		}
 
-		break;
-
-	case LEAPFROG:
 		break;
 
 	default:
@@ -144,14 +116,8 @@ void MassSpringSystemSimulator::simulateTimestep(float timeStep)
 }
 
 
-void MassSpringSystemSimulator::onClick(int x, int y)
-{
-	//cout << "Clickeed -> " << x << "," << y << endl;
-}
-void MassSpringSystemSimulator::onMouse(int x, int y) {
-	
-
-};
+void MassSpringSystemSimulator::onClick(int x, int y) {};
+void MassSpringSystemSimulator::onMouse(int x, int y) {};
 
 // Specific Functions
 void MassSpringSystemSimulator::setMass(float mass) { m_fMass = mass; };
@@ -160,87 +126,6 @@ void MassSpringSystemSimulator::setStiffness(float stiffness) { m_fStiffness = s
 
 void MassSpringSystemSimulator::setDampingFactor(float damping) { m_fDamping = damping; };
 
-int MassSpringSystemSimulator::addMassPoint(Vec3 position, Vec3 Velocity, bool isFixed) {
-	MassPoint mp;
-	mp.vel = Velocity;
-	mp.pos = position;
-	mp.mass = m_fMass;
-	mp.fixed = isFixed;
-	m_massPoints.push_back(mp);
-	return m_massPoints.size() - 1; // We just return the index
-}
-
-void MassSpringSystemSimulator::addSpring(int masspoint1, int masspoint2, float initialLength)
-{
-	Spring sp;
-	sp.p1 = masspoint1;
-	sp.p2 = masspoint2;
-	sp.initialLength = initialLength;
-	sp.currentLength = computeDistance(getMassPoint(sp.p1)->pos, getMassPoint(sp.p2)->pos);
-	m_springs.push_back(sp);
-}
-
-int MassSpringSystemSimulator::getNumberOfMassPoints() { return m_massPoints.size(); }; 
-
-int MassSpringSystemSimulator::getNumberOfSprings() { return m_springs.size(); };
-
-Vec3 MassSpringSystemSimulator::getPositionOfMassPoint(int index) { return m_massPoints[index].pos; }; 
-
-Vec3 MassSpringSystemSimulator::getVelocityOfMassPoint(int index) { return m_massPoints[index].vel; };
 
 void MassSpringSystemSimulator::applyExternalForce(Vec3 force)
 {}
-
-void MassSpringSystemSimulator::TwoMassSetup()
-{
-	setMass(10.0f);
-	setDampingFactor(3.0f);
-	setStiffness(40.0f);
-	applyExternalForce(Vec3(0, 0, 0));
-	int p0 = addMassPoint(Vec3(0.0, 0.0f, 0), Vec3(-1.0, 0.0f, 0), false);
-	int p1 = addMassPoint(Vec3(0.0, 2.0f, 0), Vec3(1.0, 0.0f, 0), false);
-	addSpring(p0, p1, 1.0);
-}
-
-void MassSpringSystemSimulator::ComplexSetup()
-{
-
-	setMass(1.0f);
-	setDampingFactor(1.5f);
-	setStiffness(9000.0f);
-	int rowMassCount = 10;
-	int columnMassCount = 7; 
-
-	float posScale = 0.2;
-	// Draw the cloth in the XY plane
-
-	Vec3 basePosition = posScale * Vec3(-columnMassCount / 2.0, rowMassCount + 3, 0);
-	// Vec3 baseVelocity = 0.1 * posScale * getNormalized(Vec3(1, 0, 0));
-
-
-	int massCounter = 0;
-	for (int row = 0; row < rowMassCount; row++)
-	{
-		for (int col = 0; col < columnMassCount; col++)
-		{
-			int idx = addMassPoint(basePosition + posScale * Vec3(col, 0, row), Vec3(0, 0, 0), row == 0);
-			// Add spring to the left
-			if (col > 0){ addSpring(massCounter - 1, massCounter, posScale); }
-			// Add spring upwards
-			if (row > 0) { addSpring(massCounter - columnMassCount, massCounter, posScale); }
-			// Add spring left and up
-			if (row > 0 && col > 0) addSpring(massCounter - columnMassCount - 1, massCounter, posScale * 1.4142);
-
-			if (col < columnMassCount - 1 && row > 0)  addSpring(massCounter - columnMassCount + 1, massCounter, posScale * 1.4142);
-
-			massCounter++;
-		}
-	}
-
-	cout << "Finished setup" << endl;
-}
-
-
-MassPoint* MassSpringSystemSimulator::getMassPoint(unsigned int idx) { return &m_massPoints[idx]; }
-
-

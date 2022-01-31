@@ -128,21 +128,20 @@ CoupledSimulator::CoupledSimulator()
 	// We save the pointer for callback reference
 	INSTANCE = this;
 
-	reset();
-}
-
-// Set up a clean state
-void CoupledSimulator::reset() {
-	m_mouse.x = m_mouse.y = 0;
-	m_trackmouse.x = m_trackmouse.y = 0;
-	m_oldtrackmouse.x = m_oldtrackmouse.y = 0;
-
-	if (m_simulationState != nullptr) delete m_simulationState;
+	// if (m_simulationState != nullptr) delete m_simulationState;
 	m_simulationState = new SimulationState();
 	m_difussionSimulator = DiffusionSimulator(m_simulationState);
 	m_massSpringSimulator = MassSpringSystemSimulator(m_simulationState);
 	m_massSpringSimulator.setObstacleScene(m_selectedObstacleScene);
 	m_massSpringSimulator.setWindField(m_selectedWindField);
+}
+
+// Set up a clean state
+void CoupledSimulator::reset() {
+	cout << "Called Reset" << endl;
+	m_mouse.x = m_mouse.y = 0;
+	m_trackmouse.x = m_trackmouse.y = 0;
+	m_oldtrackmouse.x = m_oldtrackmouse.y = 0;
 }
 
 void CoupledSimulator::initUI(DrawingUtilitiesClass* DUC)
@@ -187,8 +186,6 @@ void CoupledSimulator::initUI(DrawingUtilitiesClass* DUC)
 void CoupledSimulator::simulateTimestep(float timeStep)
 {
 	
-	m_massSpringSimulator.simulateTimestep(timeStep);
-	m_difussionSimulator.simulateTimestep(timeStep);
 }
 
 
@@ -197,9 +194,12 @@ void CoupledSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
 	// This will be the only simulator that draws. The other two subsimulator will just compute a new state
 
 	// Draw the wind field in case is enabled
-	if (m_selectedWindField->isEnabled()) m_selectedWindField->drawWindField(0, DUC);
 
-	m_selectedObstacleScene->drawObstacles(DUC);
+	drawMassSpringSystem();
+
+	// if (m_selectedWindField->isEnabled()) m_selectedWindField->drawWindField(0, DUC);
+
+	// m_selectedObstacleScene->drawObstacles(DUC);
 	
 	// TODO: Draw the cloth with respective colors! See branch Rafael1
 }
@@ -255,4 +255,28 @@ void CoupledSimulator::setCurrentWindFieldFromIndex(int idx) {
 	WindField* newField = m_windFields[idx];
 	m_selectedWindField = newField;
 	m_massSpringSimulator.setWindField(newField);
+}
+
+
+void CoupledSimulator::drawMassSpringSystem() {
+	float sphereScale = 1.0 / 15.0;
+
+
+	cout << m_simulationState->m_totalMassPoints << endl;
+	for (unsigned int i = 0; i < 70; i++)
+	{
+		MassPoint mp = m_simulationState->m_massPoints[i];
+		cout << mp.pos << endl;
+		DUC->drawSphere(mp.pos, Vec3(sphereScale, sphereScale, sphereScale));
+	}
+
+	//// if (!m_showSprings) return;
+	//Vec3 lineColor = Vec3(0, 1, 0);
+	//for (unsigned int i = 0; i < m_simulationState->m_totalSprings; i++)
+	//{
+	//	Spring sp = m_simulationState->m_springs[i];
+	//	DUC->beginLine();
+	//	DUC->drawLine(m_simulationState->getMassPoint(sp.p1)->pos, lineColor, m_simulationState->getMassPoint(sp.p2)->pos, lineColor);
+	//	DUC->endLine();
+	//}
 }

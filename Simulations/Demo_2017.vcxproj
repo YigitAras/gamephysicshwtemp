@@ -229,7 +229,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="MassSpringSystemSimulator.cpp" />
-    <ClCompile Include="ObstacleSceneBase.cpp" />
     <ClCompile Include="SimulationState.cpp" />
     <ClCompile Include="util\FFmpeg.cpp" />
     <ClCompile Include="util\util.cpp" />
