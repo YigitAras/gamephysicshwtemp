@@ -1,6 +1,9 @@
 #ifndef MASSSPRINGSYSTEMSIMULATOR_h
 #define MASSSPRINGSYSTEMSIMULATOR_h
 #include "Simulator.h"
+#include "Grid.h"
+#include "Obstacle.h"
+
 
 // Do Not Change
 #define EULER 0
@@ -94,5 +97,20 @@ private:
 	void TwoMassSetup();
 	void ComplexSetup();
 	MassPoint* getMassPoint(unsigned int idx);
+
+	// Diffussion
+	Grid* T; //save results of every time step
+	Grid* newT;
+	float alpha;
+	int m_gridWidth;
+	int m_gridHeight;
+
+	void gridInitialSetup();
+	Grid* diffuseTemperatureExplicit(float timeStep);
+
+
+	float computeNewExplicitU(int x, int y, float timeStep);
+	BoxObstacle cyl;
+
 }; 
 #endif

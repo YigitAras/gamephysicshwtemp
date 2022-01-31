@@ -1,6 +1,24 @@
 
 #include "MassSpringSystemSimulator.h"
+
 #include "util.h"
+
+
+static inline void setUpLightingColor(DrawingUtilitiesClass* DUC, float temp) {
+	float specMult = 5;
+	float f = fabsf(temp);
+	f /= 1000.0;
+	Vec3 l(0, 0, 0);
+	if (temp < 0) {
+		l[2] = f;
+	}
+	else {
+		l[0] = f;
+	}
+	DUC->setUpLighting(l, specMult * Vec3(1, 1, 1), 70, 0.015 * Vec3(1, 1, 1));
+
+}
+
 	
 Vec3 windField(Vec3 pos, float timeElapsed)
 {
@@ -15,12 +33,23 @@ MassSpringSystemSimulator::MassSpringSystemSimulator()
 	m_groundEnabled = false;
 	m_showSprings = true;
 	m_firstStep = true;
+	m_iTestCase = 3;
+	m_gridWidth = 7;
+	m_gridHeight = 10;
+
+	alpha = 20.0;
+	T = new Grid(m_gridWidth, m_gridHeight, 0);
+	newT = new Grid(m_gridWidth, m_gridHeight, 0);
+	gridInitialSetup();
 	setIntegrator(EULER);
+
+	//cyl = CylinderObstacle(Vec3(0.2, 0, -0.4), 2, 1, 70.0f);
+	cyl = BoxObstacle(Vec3(1.6, 1.5, 2), Vec3(0,0,-0.5), 60000.0f);
 }
 
 const char* MassSpringSystemSimulator::getTestCasesStr()
 {
-	return "Demo1,Demo2,Demo3,Demo4";
+	return "Empty,Obstacle";
 }
 
 
@@ -29,30 +58,11 @@ void MassSpringSystemSimulator::initUI(DrawingUtilitiesClass* DUC)
 	cout << "Called InitUI" << endl;
 	TwType TW_TYPE_TESTCASE = TwDefineEnumFromString("Integrator", "Euler,Midpoint");
 	this->DUC = DUC;
-	switch (m_iTestCase)
-	{
-	case 0:
-		TwAddVarRW(DUC->g_pTweakBar, "Show Springs", TW_TYPE_BOOLCPP, &m_showSprings, "");
-		TwAddVarRW(DUC->g_pTweakBar, "Integrator", TW_TYPE_TESTCASE, &m_iIntegrator, "");
-		break;
-	case 1:
-		TwAddVarRW(DUC->g_pTweakBar, "Show Springs", TW_TYPE_BOOLCPP, &m_showSprings, "");
-		break;
-
-	case 2:
-		TwAddVarRW(DUC->g_pTweakBar, "Show Springs", TW_TYPE_BOOLCPP, &m_showSprings, "");
-		break;
-
-	case 3:
-		TwAddVarRW(DUC->g_pTweakBar, "Integrator", TW_TYPE_TESTCASE, &m_iIntegrator, "");
-		TwAddVarRW(DUC->g_pTweakBar, "Enable Gravity", TW_TYPE_BOOLCPP, &m_gravityEnabled, "");
-		TwAddVarRW(DUC->g_pTweakBar, "Enable Ground", TW_TYPE_BOOLCPP, &m_groundEnabled, "");
-		TwAddVarRW(DUC->g_pTweakBar, "Enable Wind", TW_TYPE_BOOLCPP, &m_windEnabled, "");
-		break;
-	default:
-		cout << "Empty Test!\n";
-		break;
-	}
+	TwAddVarRW(DUC->g_pTweakBar, "Diffussion Alpha", TW_TYPE_FLOAT, &alpha, "min=0 step=0.05");
+	TwAddVarRW(DUC->g_pTweakBar, "Integrator", TW_TYPE_TESTCASE, &m_iIntegrator, "");
+	TwAddVarRW(DUC->g_pTweakBar, "Enable Gravity", TW_TYPE_BOOLCPP, &m_gravityEnabled, "");
+	TwAddVarRW(DUC->g_pTweakBar, "Enable Ground", TW_TYPE_BOOLCPP, &m_groundEnabled, "");
+	TwAddVarRW(DUC->g_pTweakBar, "Enable Wind", TW_TYPE_BOOLCPP, &m_windEnabled, "");
 }
 
 void MassSpringSystemSimulator::reset()
@@ -63,12 +73,25 @@ void MassSpringSystemSimulator::reset()
 }
 void MassSpringSystemSimulator::drawFrame(ID3D11DeviceContext* pd3dImmediateContext)
 {
+	if (m_iTestCase == 1) {
+		setUpLightingColor(DUC, cyl.getTemp());
+		cyl.drawObstacle(DUC);
+	}
+
+
 	if (m_groundEnabled) DUC->DrawFloor(pd3dImmediateContext);
 
 	float sphereScale = 1.0 / 15.0;
+
+	int counter = 0;
 	for (auto& mp : m_massPoints)
 	{
+		float temp = T->get( counter % m_gridWidth , counter / m_gridWidth) / 10.0;
+
+		setUpLightingColor(DUC, temp);
+
 		DUC->drawSphere(mp.pos, Vec3(sphereScale, sphereScale, sphereScale));
+		counter++;
 	}
 
 	if (!m_showSprings) return;
@@ -88,32 +111,15 @@ void MassSpringSystemSimulator::notifyCaseChanged(int testCase)
 	switch (m_iTestCase)
 	{
 	case 0:
-		m_firstStep = true;
-		m_gravityEnabled = false;
-		m_groundEnabled = false;
-		m_showSprings = true;
+		cout << "Empty!" << endl;;
+		m_gravityEnabled = true;
+		m_groundEnabled = true;
 		m_windEnabled = false;
-		TwoMassSetup();
+		setIntegrator(MIDPOINT);
+		ComplexSetup();
 		break;
 
 	case 1:
-		m_gravityEnabled = false;
-		m_groundEnabled = false;
-		m_showSprings = true;
-		m_windEnabled = false;
-		setIntegrator(EULER);
-		TwoMassSetup();
-		break;
-	case 2:
-		m_gravityEnabled = false;
-		m_groundEnabled = false;
-		m_showSprings = true;
-		m_windEnabled = false;
-		setIntegrator(MIDPOINT);
-		TwoMassSetup();
-		break;
-	case 3:
-		cout << "Demo4\n";
 		m_gravityEnabled = true;
 		m_groundEnabled = true;
 		m_windEnabled = false;
@@ -139,6 +145,20 @@ void MassSpringSystemSimulator::computeTotalForces()
 	for (auto& mp : m_massPoints) {
 		// Clear Forces
 		mp.accumForces = Vec3(0.0f, 0.0f, 0.0f);
+
+
+		bool inside;
+		Vec3 proj = cyl.isInsideorSurface(mp.pos, &inside);
+
+		if (m_iTestCase == 1 && inside){
+
+			Vec3 diff = getNormalized(proj - mp.vel);
+			Vec3 force = diff / 0.001 / m_fMass;
+			mp.accumForces += force;
+		}
+
+
+
 		if (m_windEnabled) mp.accumForces += mp.externalForceQueue;
 		// Add External forces
 		if (m_gravityEnabled) mp.accumForces += Vec3(0, -9.81 * mp.mass, 0);
@@ -161,6 +181,13 @@ void MassSpringSystemSimulator::computeTotalForces()
 
 void MassSpringSystemSimulator::simulateTimestep(float timeStep)
 {
+
+	diffuseTemperatureExplicit(timeStep);
+	Grid* tmp = newT;
+	newT = T;
+	T = tmp;
+
+
 	switch (m_iIntegrator)
 	{
 
@@ -203,6 +230,7 @@ void MassSpringSystemSimulator::simulateTimestep(float timeStep)
 			mp.vel = mp.velBak + timeStep * mp.accumForces / mp.mass;
 			mp.pos = mp.posBak;
 			if (m_groundEnabled && mp.pos.y < 0) mp.pos.y = -mp.pos.y;
+
 		}
 
 		break;
@@ -288,8 +316,8 @@ void MassSpringSystemSimulator::ComplexSetup()
 	setMass(1.0f);
 	setDampingFactor(1.5f);
 	setStiffness(9000.0f);
-	int rowMassCount = 10;
-	int columnMassCount = 7; 
+	int rowMassCount = m_gridHeight;
+	int columnMassCount = m_gridWidth; 
 
 	float posScale = 0.2;
 	// Draw the cloth in the XY plane
@@ -323,4 +351,52 @@ void MassSpringSystemSimulator::ComplexSetup()
 
 MassPoint* MassSpringSystemSimulator::getMassPoint(unsigned int idx) { return &m_massPoints[idx]; }
 
+
+void MassSpringSystemSimulator::gridInitialSetup() {
+	T->fillWith(0);
+	newT->fillWith(0);
+
+	//// Change this to see different effects in the simulation
+	//T->setRegionTo(m_gridWidth / 2, m_gridHeight / 2, 2, 5, -100);
+	//T->setRegionTo(2, 3, 2, 2, 300);
+	//T->setRegionTo(1, m_gridHeight - 6, 5, 5, 700);
+	T->setBorderToInitial();
+	newT->setBorderToInitial();
+}
+
+
+Grid* MassSpringSystemSimulator::diffuseTemperatureExplicit(float timeStep) {//add your own parameters
+	for (int y = 1; y < m_gridHeight - 1; y++)
+	{
+		for (int x = 1; x < m_gridWidth - 1; x++)
+		{
+			float val = computeNewExplicitU(x, y, timeStep);
+			newT->set(x, y, val);
+		}
+	}
+	return newT;
+}
+
+
+float MassSpringSystemSimulator::computeNewExplicitU(int x, int y, float timeStep) {
+	float top = T->get(x, y - 1);
+	float down = T->get(x, y + 1);
+	float center = T->get(x, y);
+	float left = T->get(x - 1, y);
+	float right = T->get(x + 1, y);
+
+	Vec3 pos = m_massPoints[y * m_gridWidth + x].pos;
+
+	float extra = 0;
+	if (m_iTestCase == 1 && cyl.isClose(pos)) {
+		extra = cyl.getTemp();
+	}
+
+	// Asuming deltaX = deltaY = 1
+	// Simplified from class slides
+	float firstTerm = alpha * timeStep * (
+		extra + right + left + top + down - 4.0 * center
+		);
+	return firstTerm + center;
+}
 

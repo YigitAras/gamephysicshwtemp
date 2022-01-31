@@ -224,6 +224,8 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="MassSpringSystemSimulator.cpp" />
     <ClCompile Include="TemplateSimulator.cpp" />
     <ClCompile Include="util\FFmpeg.cpp" />
@@ -231,7 +233,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DrawingUtilitiesClass.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="MassSpringSystemSimulator.h" />
+    <ClInclude Include="Obstacle.h" />
     <ClInclude Include="Simulator.h" />
     <ClInclude Include="TemplateSimulator.h" />
     <ClInclude Include="util.h" />
